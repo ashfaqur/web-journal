@@ -1,0 +1,43 @@
+name: Build and Package
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '16'
+
+      - name: Install dependencies
+        run: |
+          cd web
+          npm install
+
+      - name: Build the project
+        run: |
+          cd web
+          npm run build
+
+      - name: Create package
+        run: |
+          cd web
+          npm pack
+
+      - name: Upload package
+        uses: actions/upload-artifact@v3
+        with:
+          name: my-package
+          path: web/*.tgz
