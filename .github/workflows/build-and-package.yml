@@ -33,11 +33,11 @@ jobs:
 
       - name: Create package
         run: |
-          cd web/build
-          npm pack
+          cd web
+          tar -czvf web-package.tar.gz build
 
       - name: Upload package
         uses: actions/upload-artifact@v4
         with:
           name: web-package
-          path: web/buid/*.tgz
+          path: web/web-package.tar.gz
