@@ -13,7 +13,7 @@ JOURANL_FILE_PATTERN = re.compile(
 )
 
 
-def parse_journal(path: str) -> None:
+def parse_journal(path: str) -> list[Month]:
     logging.debug(f"Provided path to journal directory: '{path}'")
 
     # Convert the string path to a Path object
@@ -39,9 +39,14 @@ def parse_journal(path: str) -> None:
     # Print the list of files
     logging.debug(f"Files in '{path}': {journal_files}")
 
+    months: list[Month] = []
+
     for journal_file in journal_files:
         month: Month = parseJournalfile(journal_file)
         month.print_month()
+        months.append(month)
+
+    return months
 
 
 def parseJournalfile(journal_file: Path) -> Month:
