@@ -1,4 +1,5 @@
 import sqlite3
+from datetime import datetime
 from sqlite3 import Connection
 
 
@@ -60,20 +61,59 @@ def add_journal_entry(conn: Connection, date: str, entry: int):
         cursor.close()
 
 
-# Example usage
-db_path = "build/example_database.db"
-conn = connect_to_db(db_path)
-create_table(conn)
-add_journal_entry(conn, "2024-11-29", 123)
-close_connection(conn)
-
-
 def insert_journal_entrys(entries: list[tuple[str, int]]):
     try:
-        db_path = "build/example_databas.db"
+        db_path = "build/example_database.db"
         conn = connect_to_db(db_path)
         create_table(conn)
         add_multiple_journal_entries(conn, entries)
         close_connection(conn)
     except Exception as e:
         print(f"Failed to add entry: {e}")
+
+
+def get_last_thirty_days() -> list[dict]:
+    try:
+        db_path = "build/example_database.db"
+        conn = connect_to_db(db_path)
+        create_table(conn)
+        cursor = conn.cursor()
+        # get todays date in format YYYY-MM-DD
+        date = datetime.now().strftime("%Y-%m-%d")
+        # make query for last 30 days given todays date
+        cursor.execute(
+            """
+            SELECT date, entry
+            FROM journal
+            WHERE date <= ?
+            ORDER BY date DESC
+            LIMIT 30
+            """,
+            (date,),
+        )
+        rows = cursor.fetchall()
+        cursor.close()
+        close_connection(conn)
+        rows = rows[::-1]  # Reverse the list
+        items: list[dict] = []
+        for row in rows:
+            date_str = datetime.strptime(row[0], "%Y-%m-%d").strftime("%d/%m")
+            entry_type = 0
+            if row[1] == 2:
+                entry_type = 2
+            elif row[1] == 3:
+                entry_type = 1
+            items.append({"date": date_str, "points": entry_type})
+
+        return items
+    except Exception as e:
+        print(f"Failed to add entry: {e}")
+    return []
+
+
+# Example usage
+db_path = "build/example_database.db"
+conn = connect_to_db(db_path)
+create_table(conn)
+add_journal_entry(conn, "2024-11-29", 123)
+close_connection(conn)
