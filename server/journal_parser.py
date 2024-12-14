@@ -4,6 +4,7 @@ from pathlib import Path
 from datetime import datetime
 from journal_parser_model import Day
 from journal_parser_model import Month
+from sql import insert_journal_entrys
 
 PATH_JOURNAL = "/home/ash/sb/daily-journal"
 
@@ -32,7 +33,7 @@ def parse_journal(path: str) -> list[Month]:
         if file.is_file() and JOURANL_FILE_PATTERN.match(file.name)
     ]
 
-    # Throw exception if therae are no files
+    # Throw exception if there are no files
     if not journal_files:
         raise ValueError(f"No journal files found in '{path}'")
 
@@ -45,6 +46,21 @@ def parse_journal(path: str) -> list[Month]:
         month: Month = parseJournalfile(journal_file)
         month.print_month()
         months.append(month)
+
+    entries: list[tuple[str, int]] = []
+    existing_dates: list[str] = []
+
+    for month in months:
+        for day in month.days:
+            day.analyze_notes()
+            date: str = day.date.strftime("%Y-%m-%d")
+            if date in existing_dates:
+                print(f"Entry already exists for {date}")
+                continue
+            existing_dates.append(date)
+            entries.append((date, day.state.value))
+
+    insert_journal_entrys(entries)
 
     return months
 

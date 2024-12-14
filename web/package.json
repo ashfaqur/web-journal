@@ -36,6 +36,8 @@
 		"vitest": "^2.0.4"
 	},
 	"dependencies": {
-		"@sveltejs/adapter-static": "^3.0.6"
+		"@sveltejs/adapter-static": "^3.0.6",
+		"@types/plotly.js-dist-min": "^2.3.4",
+		"plotly.js-dist-min": "^2.32.0"
 	}
 }

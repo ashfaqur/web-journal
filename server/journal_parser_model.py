@@ -1,4 +1,5 @@
 from datetime import datetime
+from journal_day_entry_state_enum import STATE
 
 
 class Day:
@@ -6,6 +7,7 @@ class Day:
     def __init__(self, date: datetime):
         self.date: datetime = date
         self.notes: list[str] = []
+        self.state: STATE = STATE.NONE
 
     def add_note(self, note: str) -> None:
         self.notes.append(note)
@@ -22,6 +24,14 @@ class Day:
     def print_notes(self) -> None:
         for note in self.notes:
             print(note)
+
+    def analyze_notes(self) -> None:
+        if self.notes:
+            last_note = self.notes[-1]
+            if last_note.endswith("--"):
+                self.state = STATE.INCOMPLETE
+            else:
+                self.state = STATE.COMPLETE
 
 
 class Month:
