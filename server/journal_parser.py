@@ -44,7 +44,7 @@ def parse_journal(path: str) -> list[Month]:
 
     for journal_file in journal_files:
         month: Month = parseJournalfile(journal_file)
-        month.print_month()
+        # month.print_month()
         months.append(month)
 
     entries: list[tuple[str, int]] = []
@@ -59,6 +59,8 @@ def parse_journal(path: str) -> list[Month]:
                 continue
             existing_dates.append(date)
             entries.append((date, day.state.value))
+
+        month.print_month()
 
     insert_journal_entrys(entries)
 

@@ -1,5 +1,6 @@
 from datetime import datetime
 from journal_day_entry_state_enum import STATE
+import re
 
 
 class Day:
@@ -8,6 +9,7 @@ class Day:
         self.date: datetime = date
         self.notes: list[str] = []
         self.state: STATE = STATE.NONE
+        self.points: int = 0
 
     def add_note(self, note: str) -> None:
         self.notes.append(note)
@@ -24,14 +26,34 @@ class Day:
     def print_notes(self) -> None:
         for note in self.notes:
             print(note)
+        print(f"Total points : {self.points}")
 
     def analyze_notes(self) -> None:
+        self.set_note_state()
+        self.calculate_points()
+
+    def set_note_state(self) -> None:
         if self.notes:
             last_note = self.notes[-1]
             if last_note.endswith("--"):
                 self.state = STATE.INCOMPLETE
             else:
                 self.state = STATE.COMPLETE
+
+    def calculate_points(self) -> None:
+        # if the date is before 1st of December 2023
+        if self.date < datetime(2023, 12, 1):
+            for note in self.notes:
+                if note.startswith("-"):
+                    self.points += 1
+                elif note.startswith("+"):
+                    self.points += 5
+                elif note.startswith("*"):
+                    self.points += 10
+        else:
+            for note in self.notes:
+                match = re.search(r"\b(\d+)\b$", note)
+                self.points += int(match.group(1)) if match else 0
 
 
 class Month:
