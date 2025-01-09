@@ -14,7 +14,7 @@ JOURANL_FILE_PATTERN = re.compile(
 )
 
 
-def parse_journal(path: str) -> list[Month]:
+def parse_journal(path: str) -> list[Day]:
     logging.debug(f"Provided path to journal directory: '{path}'")
 
     # Convert the string path to a Path object
@@ -40,31 +40,36 @@ def parse_journal(path: str) -> list[Month]:
     # Print the list of files
     logging.debug(f"Files in '{path}': {journal_files}")
 
-    months: list[Month] = []
+    days: list[Day] = []
 
     for journal_file in journal_files:
         month: Month = parseJournalfile(journal_file)
-        # month.print_month()
-        months.append(month)
+        days.extend(month.get_days())
 
+    return days
+
+
+def parse_journal_files(files: list[str]) -> list[Day]:
+    days: list[Day] = []
+    for file in files:
+        month: Month = parseJournalfile(Path(file))
+        days.extend(month.get_days())
+    return days
+
+
+def insert_journal_data(days: list[Day]):
     entries: list[tuple[str, str, int]] = []
     existing_dates: list[str] = []
-
-    for month in months:
-        for day in month.days:
-            day.analyze_notes()
-            date: str = day.date.strftime("%Y-%m-%d")
-            if date in existing_dates:
-                print(f"Entry already exists for {date}")
-                continue
-            existing_dates.append(date)
-            entries.append((date, day.state.value, day.points))
-
-        month.print_month()
+    for day in days:
+        day.analyze_notes()
+        date: str = day.date.strftime("%Y-%m-%d")
+        if date in existing_dates:
+            print(f"Entry already exists for {date}")
+            continue
+        existing_dates.append(date)
+        entries.append((date, day.state.value, day.points))
 
     insert_journal_entrys(entries)
-
-    return months
 
 
 def parseJournalfile(journal_file: Path) -> Month:
@@ -107,6 +112,7 @@ if __name__ == "__main__":
         datefmt="%H:%M:%S",
     )
     try:
-        parse_journal(PATH_JOURNAL)
+        days: list[Day] = parse_journal(PATH_JOURNAL)
+        insert_journal_data(days)
     except Exception as e:
         logging.error(e)

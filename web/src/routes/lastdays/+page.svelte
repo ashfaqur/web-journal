@@ -7,6 +7,7 @@
 	const yaxis = 'Points';
 	let x: string[] = $state([]);
 	let y: number[] = $state([]);
+	let s: string[] = $state([]);
 	$inspect(x);
 	$inspect(y);
 
@@ -21,6 +22,7 @@
 			console.log('Data:', data);
 			x = data.map((entry: { date: string }) => entry.date);
 			y = data.map((entry: { points: number }) => entry.points);
+			s = data.map((entry: { state: string }) => entry.state);
 		} catch (error) {
 			console.error('Error fetching data:', error);
 		}
@@ -35,4 +37,4 @@
 </section>
 
 <!-- Graph -->
-<section><PlotBar {title} {xaxis} {yaxis} {x} {y} /></section>
+<section><PlotBar {title} {xaxis} {yaxis} {x} {y} {s} /></section>
