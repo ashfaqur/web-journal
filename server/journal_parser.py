@@ -47,7 +47,7 @@ def parse_journal(path: str) -> list[Month]:
         # month.print_month()
         months.append(month)
 
-    entries: list[tuple[str, int]] = []
+    entries: list[tuple[str, str, int]] = []
     existing_dates: list[str] = []
 
     for month in months:
@@ -58,7 +58,7 @@ def parse_journal(path: str) -> list[Month]:
                 print(f"Entry already exists for {date}")
                 continue
             existing_dates.append(date)
-            entries.append((date, day.state.value))
+            entries.append((date, day.state.value, day.points))
 
         month.print_month()
 

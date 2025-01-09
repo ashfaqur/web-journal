@@ -21,7 +21,8 @@ def create_table(conn: Connection):
         """
     CREATE TABLE IF NOT EXISTS journal (
         date TEXT PRIMARY KEY,
-        entry INTEGER
+        state TEXT,
+        points INTEGER
     )
     """
     )
@@ -29,12 +30,12 @@ def create_table(conn: Connection):
     cursor.close()
 
 
-def add_multiple_journal_entries(conn: Connection, entries: list[tuple[str, int]]):
+def add_multiple_journal_entries(conn: Connection, entries: list[tuple[str, str, int]]):
     cursor = conn.cursor()
     cursor.executemany(
         """
-        INSERT OR REPLACE INTO journal (date, entry)
-        VALUES (?, ?)
+        INSERT OR REPLACE INTO journal (date, state, points)
+        VALUES (?, ?, ?)
         """,
         entries,
     )
@@ -42,16 +43,16 @@ def add_multiple_journal_entries(conn: Connection, entries: list[tuple[str, int]
     cursor.close()
 
 
-def add_journal_entry(conn: Connection, date: str, entry: int):
+def add_journal_entry(conn: Connection, date: str, entry: int, points: int):
 
     try:
         cursor = conn.cursor()
         cursor.execute(
             """
-            INSERT INTO journal (date, entry)
-            VALUES (?, ?)
+            INSERT INTO journal (date, state, points)
+            VALUES (?, ?,?)
             """,
-            (date, entry),
+            (date, entry, points),
         )
         conn.commit()
         print("Entry added successfully.")
@@ -61,7 +62,15 @@ def add_journal_entry(conn: Connection, date: str, entry: int):
         cursor.close()
 
 
-def insert_journal_entrys(entries: list[tuple[str, int]]):
+def insert_journal_entrys(
+    entries: list[
+        tuple[
+            str,
+            str,
+            int,
+        ]
+    ]
+):
     try:
         db_path = "build/example_database.db"
         conn = connect_to_db(db_path)
@@ -83,7 +92,7 @@ def get_last_thirty_days() -> list[dict]:
         # make query for last 30 days given todays date
         cursor.execute(
             """
-            SELECT date, entry
+            SELECT date, state, points
             FROM journal
             WHERE date <= ?
             ORDER BY date DESC
@@ -98,22 +107,16 @@ def get_last_thirty_days() -> list[dict]:
         items: list[dict] = []
         for row in rows:
             date_str = datetime.strptime(row[0], "%Y-%m-%d").strftime("%d/%m")
-            entry_type = 0
-            if row[1] == 2:
-                entry_type = 2
-            elif row[1] == 3:
-                entry_type = 1
-            items.append({"date": date_str, "points": entry_type})
-
+            items.append({"date": date_str, "state": row[1], "points": row[2]})
         return items
     except Exception as e:
         print(f"Failed to add entry: {e}")
     return []
 
 
-# Example usage
-db_path = "build/example_database.db"
-conn = connect_to_db(db_path)
-create_table(conn)
-add_journal_entry(conn, "2024-11-29", 123)
-close_connection(conn)
+# # Example usage
+# db_path = "build/example_database.db"
+# conn = connect_to_db(db_path)
+# create_table(conn)
+# add_journal_entry(conn, "2024-11-29", State)
+# close_connection(conn)
