@@ -14,7 +14,7 @@
 	// Fetch data when the component is mounted
 	onMount(async () => {
 		try {
-			const response = await fetch('http://localhost:8181/last30days');
+			const response = await fetch('http://192.168.2.221:8181/last30days');
 			if (!response.ok) {
 				throw new Error('Failed to fetch data');
 			}
