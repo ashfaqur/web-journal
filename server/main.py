@@ -76,6 +76,6 @@ async def root():
 
 @app.get("/last30days")
 async def get_last_30_days():
-    items = get_last_thirty_days()
+    items = get_last_thirty_days(journal_database_path_env)
     print(items)
     return items
