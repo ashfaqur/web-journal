@@ -40,7 +40,7 @@ async def periodic_task():
         else:
             logging.debug("No journal files found")
 
-        await asyncio.sleep(15)  # in seconds
+        await asyncio.sleep(3600)  # in seconds
 
 
 @asynccontextmanager
