@@ -36,11 +36,11 @@ async def periodic_task():
         if journal_files:
             logging.debug(journal_files)
             days = parse_journal_files(journal_files)
-            insert_journal_data(days)
+            insert_journal_data(days, journal_database_path_env)
         else:
             logging.debug("No journal files found")
 
-        await asyncio.sleep(10)  # in seconds
+        await asyncio.sleep(15)  # in seconds
 
 
 @asynccontextmanager

@@ -2,6 +2,8 @@ import sqlite3
 from datetime import datetime
 from sqlite3 import Connection
 
+journal_database_path = None
+
 
 def connect_to_db(file_path) -> Connection:
     conn = sqlite3.connect(file_path)
@@ -69,11 +71,12 @@ def insert_journal_entrys(
             str,
             int,
         ]
-    ]
+    ],
+    journal_database_path_env: str,
 ):
     try:
-        db_path = "build/example_database.db"
-        conn = connect_to_db(db_path)
+        journal_database_path = journal_database_path_env
+        conn = connect_to_db(journal_database_path)
         create_table(conn)
         add_multiple_journal_entries(conn, entries)
         close_connection(conn)
@@ -83,8 +86,7 @@ def insert_journal_entrys(
 
 def get_last_thirty_days() -> list[dict]:
     try:
-        db_path = "build/example_database.db"
-        conn = connect_to_db(db_path)
+        conn = connect_to_db(journal_database_path)
         create_table(conn)
         cursor = conn.cursor()
         # get todays date in format YYYY-MM-DD

@@ -57,7 +57,7 @@ def parse_journal_files(files: list[str]) -> list[Day]:
     return days
 
 
-def insert_journal_data(days: list[Day]):
+def insert_journal_data(days: list[Day], journal_database_path: str):
     entries: list[tuple[str, str, int]] = []
     existing_dates: list[str] = []
     for day in days:
@@ -69,7 +69,7 @@ def insert_journal_data(days: list[Day]):
         existing_dates.append(date)
         entries.append((date, day.state.value, day.points))
 
-    insert_journal_entrys(entries)
+    insert_journal_entrys(entries, journal_database_path)
 
 
 def parseJournalfile(journal_file: Path) -> Month:
@@ -113,6 +113,6 @@ if __name__ == "__main__":
     )
     try:
         days: list[Day] = parse_journal(PATH_JOURNAL)
-        insert_journal_data(days)
+        insert_journal_data(days, PATH_JOURNAL)
     except Exception as e:
         logging.error(e)
