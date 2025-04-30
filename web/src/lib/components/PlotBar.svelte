@@ -10,9 +10,10 @@
 		x: string[];
 		y: number[];
 		s: string[];
+		fallback: boolean;
 	}
 
-	let { title, xaxis, yaxis, x, y, s }: PlotlyProps = $props();
+	let { title, xaxis, yaxis, x, y, s, fallback }: PlotlyProps = $props();
 
 	// Define colors for each state
 	const stateColors: { [key: string]: string } = {
@@ -53,4 +54,12 @@
 	});
 </script>
 
-<div class="w-full"><div id="plot"></div></div>
+<div class="w-full">
+	{#if fallback}
+		<!-- Infomation panel saying the data is mock -->
+		<div class="mb-4 rounded bg-yellow-200 px-4 py-2 text-center">
+			<p class="text-yellow-900">Showing mock data.</p>
+		</div>
+	{/if}
+	<div id="plot"></div>
+</div>

@@ -1,28 +1,29 @@
 <script lang="ts">
 	import PlotBar from '$lib/components/PlotBar.svelte';
 	import { onMount } from 'svelte';
+	import { fetchLastThirtyDays } from '$lib/api';
+	import type { DayPoints, FetchLastDaysResult } from '$lib/types/response';
 
 	const title = 'Points in last 30 Days';
 	const xaxis = 'Date';
 	const yaxis = 'Points';
-	let x: string[] = $state([]);
-	let y: number[] = $state([]);
-	let s: string[] = $state([]);
-	$inspect(x);
-	$inspect(y);
+	let xValues: string[] = $state([]);
+	let yValues: number[] = $state([]);
+	let stateValues: string[] = $state([]);
+	let fallback: boolean = $state(false);
+	$inspect(xValues);
+	$inspect(yValues);
 
 	// Fetch data when the component is mounted
 	onMount(async () => {
 		try {
-			const response = await fetch('http://192.168.2.221:8181/last30days');
-			if (!response.ok) {
-				throw new Error('Failed to fetch data');
-			}
-			const data = await response.json();
+			const result: FetchLastDaysResult = await fetchLastThirtyDays();
+			const data: DayPoints[] = result.data;
+			fallback = result.isFallback;
 			console.log('Data:', data);
-			x = data.map((entry: { date: string }) => entry.date);
-			y = data.map((entry: { points: number }) => entry.points);
-			s = data.map((entry: { state: string }) => entry.state);
+			xValues = data.map((entry: { date: string }) => entry.date);
+			yValues = data.map((entry: { points: number }) => entry.points);
+			stateValues = data.map((entry: { state: string }) => entry.state);
 		} catch (error) {
 			console.error('Error fetching data:', error);
 		}
@@ -31,10 +32,12 @@
 
 <!-- Header -->
 <section>
-	<div class="container flex min-w-full items-center justify-center bg-green-600 px-6 py-2">
-		<h2 class="text-3xl font-bold">Last 30 Days</h2>
+	<div class="container flex min-w-full items-center justify-center bg-green-600 px-6 py-1">
+		<h3 class="text-2xl">Last Days</h3>
 	</div>
 </section>
 
 <!-- Graph -->
-<section><PlotBar {title} {xaxis} {yaxis} {x} {y} {s} /></section>
+<section>
+	<PlotBar {title} {xaxis} {yaxis} x={xValues} y={yValues} s={stateValues} {fallback} />
+</section>

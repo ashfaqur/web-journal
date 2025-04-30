@@ -1,0 +1,35 @@
+import { serverAddress } from '$lib/constants';
+import { last30Days } from '$lib/stubs/lastThirtyDays';
+import type { DayPoints, FetchLastDaysResult } from '$lib/types/response';
+
+
+export async function fetchLastThirtyDays(): Promise<FetchLastDaysResult> {
+    try {
+        const response = await fetch(`${serverAddress}/last30Days`);
+
+        if (!response.ok) {
+            console.warn('Response not OK, falling back to stub data');
+            return { data: last30Days, isFallback: true };
+        }
+
+        const data = await response.json();
+        if (!isDayPoints(data)) {
+            console.warn('Data format invalid, falling back to stub');
+            return { data: last30Days, isFallback: true };
+        }
+        return { data: data, isFallback: false };
+    } catch (error) {
+        console.error('Network error fetching last 30 days:', error);
+        console.log('Falling back to stub data after fetch error');
+        return { data: last30Days, isFallback: true };
+    }
+}
+
+function isDayPoints(data: unknown): data is DayPoints[] {
+    return Array.isArray(data) && data.every(item =>
+        typeof item.date === 'string' &&
+        typeof item.state === 'string' &&
+        typeof item.points === 'number'
+    );
+}
+
