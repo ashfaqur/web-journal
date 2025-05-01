@@ -27,12 +27,13 @@ app.add_middleware(
 )
 
 
-@app.get("/items")
+@app.get("/health")
 async def root():
-    return {"message": "Hello World"}
+    return {"Health": "OK"}
 
 
 @app.get("/last30days")
 async def get_last_30_days():
+    print("Fetching last 30 days data")
     items = get_last_thirty_days(journal_database_path_env)
     return items

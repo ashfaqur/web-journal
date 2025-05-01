@@ -48,8 +48,6 @@
 	});
 
 	$effect(() => {
-		console.log('updating');
-		console.log(data);
 		Plotly.newPlot('plot', data, layout, config);
 	});
 </script>

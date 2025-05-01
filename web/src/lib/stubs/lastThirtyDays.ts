@@ -1,5 +1,5 @@
 import type { DayPoints } from "$lib/types/response"
-export const last30Days: DayPoints[] = [
+export const last30DaysStub: DayPoints[] = [
     {
         "date": "29/03",
         "state": "Complete",

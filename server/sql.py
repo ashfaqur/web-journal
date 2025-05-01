@@ -61,4 +61,3 @@ def get_last_thirty_days(journal_database_path_env: str) -> list[dict]:
         print(f"Failed to add entry: {e}")
     return []
 
-
