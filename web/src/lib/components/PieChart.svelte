@@ -5,31 +5,20 @@
 	interface PieChartProps {
 		title: string;
 		chart: Map<string, number>;
+		stateColors: { [key: string]: string };
 		fallback: boolean;
 	}
 
-	let { title, chart, fallback }: PieChartProps = $props();
+	let { title, chart, stateColors, fallback }: PieChartProps = $props();
 
-	$inspect(chart);
+	interface PlotlyData {
+		labels: string[];
+		values: number[];
+		type: 'pie';
+		marker: { colors: string[] };
+	}
 
-	// let labels = ['Category A', 'Category B', 'Category C'];
-	// let values = [30, 50, 20];
-
-	// interface PieData {
-	// 	labels: string[];
-	// 	values: number[];
-	// 	type: string;
-	// 	marker: { color: string[] };
-	// }
-
-	// Define colors for each state
-	const stateColors: { [key: string]: string } = {
-		None: 'gray',
-		Complete: 'green',
-		Incomplete: 'orange'
-	};
-
-	let data: any[] = $derived([
+	let data: PlotlyData[] = $derived([
 		{
 			labels: Array.from(chart.keys()),
 			values: Array.from(chart.values()),
@@ -41,16 +30,8 @@
 		}
 	]);
 
-	// let data: any = [
-	// 	{
-	// 		labels: labels,
-	// 		values: values,
-	// 		type: 'pie'
-	// 	}
-	// ];
-
 	let layout = $derived({
-		title: 'Percentage of Day Entries in Last 30 Days'
+		title: title
 	});
 
 	const config = { responsive: true };
@@ -60,8 +41,6 @@
 	});
 
 	$effect(() => {
-		console.log('updating pie chart');
-		console.log(data);
 		Plotly.newPlot('pie-chart', data, layout, config);
 	});
 </script>

@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import Plotly from 'plotly.js-dist-min';
-	import type { PlotlyData } from '$lib/types/plots';
 
 	interface PlotlyProps {
 		title: string;
@@ -9,25 +8,26 @@
 		yaxis: string;
 		x: string[];
 		y: number[];
-		s: string[];
+		states: string[];
+		stateColors: { [key: string]: string };
 		fallback: boolean;
 	}
 
-	let { title, xaxis, yaxis, x, y, s, fallback }: PlotlyProps = $props();
+	let { title, xaxis, yaxis, x, y, states, stateColors, fallback }: PlotlyProps = $props();
 
-	// Define colors for each state
-	const stateColors: { [key: string]: string } = {
-		None: 'gray',
-		Complete: 'green',
-		Incomplete: 'orange'
-	};
+	interface PlotlyData {
+		x: string[];
+		y: number[];
+		type: 'bar' | 'pie';
+		marker: { color: string[] };
+	}
 
 	let data: PlotlyData[] = $derived([
 		{
 			x,
 			y,
 			type: 'bar',
-			marker: { color: s.map((s) => stateColors[s] || 'black') }
+			marker: { color: states.map((s) => stateColors[s] || 'black') }
 		}
 	]);
 	let layout = $derived({
@@ -53,11 +53,5 @@
 </script>
 
 <div class="w-full">
-	{#if fallback}
-		<!-- Infomation panel saying the data is mock -->
-		<div class="mb-4 rounded bg-yellow-200 px-4 py-2 text-center">
-			<p class="text-yellow-900">Showing mock data.</p>
-		</div>
-	{/if}
 	<div id="plot"></div>
 </div>

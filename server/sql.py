@@ -61,3 +61,33 @@ def get_last_thirty_days(journal_database_path_env: str) -> list[dict]:
         print(f"Failed to add entry: {e}")
     return []
 
+def query_last_days(journal_db_path: str, days: int) -> list[dict]:
+    try:
+        conn = connect_to_db(journal_db_path)
+        create_table(conn)
+        cursor = conn.cursor()
+        # get todays date in format YYYY-MM-DD
+        date = datetime.now().strftime("%Y-%m-%d")
+        # make query for last x days given todays date
+        cursor.execute(
+            """
+            SELECT date, state, points
+            FROM journal
+            WHERE date <= ?
+            ORDER BY date DESC
+            LIMIT ?
+            """,
+            (date, days,),
+        )
+        rows : list[(str, str, str)] = cursor.fetchall()
+        cursor.close()
+        close_connection(conn)
+        rows = rows[::-1]  # Reverse the list
+        items: list[dict] = []
+        for row in rows:
+            date_str = datetime.strptime(row[0], "%Y-%m-%d").strftime("%d/%m")
+            items.append({"date": date_str, "state": row[1], "points": row[2]})
+        return items
+    except Exception as e:
+        print(f"Failed to add entry: {e}")
+    return []

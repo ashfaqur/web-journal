@@ -1,8 +1,8 @@
 import os
 import logging
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from sql import get_last_thirty_days
+from sql import get_last_thirty_days, query_last_days
 
 journal_database_path_env = os.getenv("JOURNAL_DATABASE_PATH")
 
@@ -15,9 +15,9 @@ logging.basicConfig(
 
 app = FastAPI()
 
-origins = ["*"]
-
-
+origins = [
+    "*"  # Allow all origins
+]
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -36,4 +36,15 @@ async def root():
 async def get_last_30_days():
     print("Fetching last 30 days data")
     items = get_last_thirty_days(journal_database_path_env)
+    return items
+
+@app.get("/lastdays/{days}")
+async def get_last_days(days: int):
+    if days < 1 or days > 30:
+        raise HTTPException(
+            status_code=400, 
+            detail="The 'days' parameter must be between 1 and 30."
+        )
+    print(f"Fetching last {days} days data")
+    items = query_last_days(journal_database_path_env, days)
     return items
