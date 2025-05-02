@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import WarnServerInactive from './WarnServerInactive.svelte';
 	import PlotBar from './PlotBar.svelte';
 	import PieChart from './PieChart.svelte';
 	import type { DayPoints, FetchLastDaysResult } from '$lib/types/response';
@@ -43,7 +42,6 @@
 			}
 		});
 		stateCounts = stateMap;
-		console.log('State Counts:', stateCounts);
 	});
 </script>
 
@@ -54,10 +52,8 @@
 	</div>
 </section>
 
-<WarnServerInactive />
-
 <PlotBar
-	title={`Points earned daily in the last ${days} Days`}
+	title={`Points earned daily`}
 	xaxis="Date"
 	yaxis="Points"
 	x={dates}
@@ -68,7 +64,7 @@
 />
 
 <PieChart
-	title={`Percentage of days having entries in the last ${days} days`}
+	title={`Percentage of days having entries`}
 	chart={stateCounts}
 	{stateColors}
 	{fallback}

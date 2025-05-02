@@ -2,7 +2,7 @@ import os
 import logging
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from sql import get_last_thirty_days, query_last_days
+from sql import query_last_days
 
 journal_database_path_env = os.getenv("JOURNAL_DATABASE_PATH")
 
@@ -30,13 +30,6 @@ app.add_middleware(
 @app.get("/health")
 async def root():
     return {"Health": "OK"}
-
-
-@app.get("/last30days")
-async def get_last_30_days():
-    print("Fetching last 30 days data")
-    items = get_last_thirty_days(journal_database_path_env)
-    return items
 
 @app.get("/lastdays/{days}")
 async def get_last_days(days: int):
