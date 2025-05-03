@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import Plotly from 'plotly.js-dist-min';
-	import type { PlotlyData } from '$lib/types/plots';
 
 	interface PlotlyProps {
 		title: string;
@@ -9,24 +8,26 @@
 		yaxis: string;
 		x: string[];
 		y: number[];
-		s: string[];
+		states: string[];
+		stateColors: { [key: string]: string };
+		fallback: boolean;
 	}
 
-	let { title, xaxis, yaxis, x, y, s }: PlotlyProps = $props();
+	let { title, xaxis, yaxis, x, y, states, stateColors, fallback }: PlotlyProps = $props();
 
-	// Define colors for each state
-	const stateColors: { [key: string]: string } = {
-		None: 'gray',
-		Complete: 'green',
-		Incomplete: 'orange'
-	};
+	interface PlotlyData {
+		x: string[];
+		y: number[];
+		type: 'bar' | 'pie';
+		marker: { color: string[] };
+	}
 
 	let data: PlotlyData[] = $derived([
 		{
 			x,
 			y,
 			type: 'bar',
-			marker: { color: s.map((s) => stateColors[s] || 'black') }
+			marker: { color: states.map((s) => stateColors[s] || 'black') }
 		}
 	]);
 	let layout = $derived({
@@ -47,10 +48,10 @@
 	});
 
 	$effect(() => {
-		console.log('updating');
-		console.log(data);
 		Plotly.newPlot('plot', data, layout, config);
 	});
 </script>
 
-<div class="w-full"><div id="plot"></div></div>
+<div class="w-full">
+	<div id="plot"></div>
+</div>

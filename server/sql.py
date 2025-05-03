@@ -29,77 +29,25 @@ def create_table(conn: Connection):
     conn.commit()
     cursor.close()
 
-
-def add_multiple_journal_entries(conn: Connection, entries: list[tuple[str, str, int]]):
-    cursor = conn.cursor()
-    cursor.executemany(
-        """
-        INSERT OR REPLACE INTO journal (date, state, points)
-        VALUES (?, ?, ?)
-        """,
-        entries,
-    )
-    conn.commit()
-    cursor.close()
-
-
-def add_journal_entry(conn: Connection, date: str, entry: int, points: int):
-
+def query_last_days(journal_db_path: str, days: int) -> list[dict]:
     try:
-        cursor = conn.cursor()
-        cursor.execute(
-            """
-            INSERT INTO journal (date, state, points)
-            VALUES (?, ?,?)
-            """,
-            (date, entry, points),
-        )
-        conn.commit()
-        print("Entry added successfully.")
-    except conn.IntegrityError as e:
-        print(f"Failed to add entry: {e}")
-    finally:
-        cursor.close()
-
-
-def insert_journal_entrys(
-    entries: list[
-        tuple[
-            str,
-            str,
-            int,
-        ]
-    ],
-    journal_database_path_env: str,
-):
-    try:
-        conn = connect_to_db(journal_database_path_env)
-        create_table(conn)
-        add_multiple_journal_entries(conn, entries)
-        close_connection(conn)
-    except Exception as e:
-        print(f"Failed to add entry: {e}")
-
-
-def get_last_thirty_days(journal_database_path_env: str) -> list[dict]:
-    try:
-        conn = connect_to_db(journal_database_path_env)
+        conn = connect_to_db(journal_db_path)
         create_table(conn)
         cursor = conn.cursor()
         # get todays date in format YYYY-MM-DD
         date = datetime.now().strftime("%Y-%m-%d")
-        # make query for last 30 days given todays date
+        # make query for last x days given todays date
         cursor.execute(
             """
             SELECT date, state, points
             FROM journal
             WHERE date <= ?
             ORDER BY date DESC
-            LIMIT 30
+            LIMIT ?
             """,
-            (date,),
+            (date, days,),
         )
-        rows = cursor.fetchall()
+        rows : list[(str, str, str)] = cursor.fetchall()
         cursor.close()
         close_connection(conn)
         rows = rows[::-1]  # Reverse the list
@@ -111,11 +59,3 @@ def get_last_thirty_days(journal_database_path_env: str) -> list[dict]:
     except Exception as e:
         print(f"Failed to add entry: {e}")
     return []
-
-
-# # Example usage
-# db_path = "build/example_database.db"
-# conn = connect_to_db(db_path)
-# create_table(conn)
-# add_journal_entry(conn, "2024-11-29", State)
-# close_connection(conn)

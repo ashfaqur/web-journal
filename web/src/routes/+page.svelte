@@ -1,19 +1,10 @@
 <script lang="ts">
-	async function buttonAction() {
-		console.log('buttonAction');
-		try {
-			const response = await fetch('http://localhost:8181/items');
-			if (!response.ok) {
-				throw new Error('Network response was not ok');
-			}
-			const data = await response.json();
-			console.log('Data:', data);
-		} catch (error) {
-			console.error('Fetch error:', error);
-		}
-	}
+	import { onMount } from 'svelte';
 </script>
 
-<h2 class="card-title">Hello World</h2>
-
-<button class="btn btn-primary" onclick={buttonAction}>Button</button>
+<div class="m-4 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+	<!-- Link buttons for different website's pages -->
+	<a href="/last7days" class="btn border-green-400 bg-green-300 hover:bg-green-500">Last 7 Days</a>
+	<a href="/last30days" class="btn border-green-400 bg-green-300 hover:bg-green-500">Last 30 Days</a
+	>
+</div>
