@@ -35,7 +35,7 @@
 		xaxis: {
 			title: xaxis,
 			tickvals: x, // Ensure all x values are plotted
-			ticktext: x.map((label, index) => (index % 30 === 0 ? label : '')) // Hide alternate labels
+			ticktext: x.map((label, index) => (index % 30 === 0 ? label : '')) // Hide labels
 		},
 		yaxis: {
 			title: yaxis

@@ -2,8 +2,7 @@
 	import { onMount } from 'svelte';
 	import PlotBar from './PlotBar.svelte';
 	import PieChart from './PieChart.svelte';
-	import type { DayPoints, FetchLastDaysResult } from '$lib/types/response';
-	import { fetchLastDays } from '$lib/api';
+	import { processLastDaysData } from '$lib/util';
 
 	interface LastDaysProps {
 		title: string;
@@ -26,22 +25,12 @@
 	};
 
 	onMount(async () => {
-		const result: FetchLastDaysResult = await fetchLastDays(days);
-		const data: DayPoints[] = result.data;
-		fallback = result.isFallback;
-		dates = data.map((entry: DayPoints) => entry.date);
-		points = data.map((entry: DayPoints) => entry.points);
-		states = data.map((entry: DayPoints) => entry.state);
-		let stateMap = new Map<string, number>();
-		states.forEach((state) => {
-			stateMap.set(state, (stateMap.get(state) || 0) + 1);
-		});
-		stateMap.forEach((value, key) => {
-			if (value !== 0) {
-				stateMap.set(key, Math.round((value * 100) / states.length));
-			}
-		});
-		stateCounts = stateMap;
+		const result = await processLastDaysData(days);
+		dates = result.dates;
+		points = result.points;
+		states = result.states;
+		stateCounts = result.stateCounts;
+		fallback = result.fallback;
 	});
 </script>
 
