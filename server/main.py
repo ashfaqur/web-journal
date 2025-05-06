@@ -33,10 +33,10 @@ async def root():
 
 @app.get("/lastdays/{days}")
 async def get_last_days(days: int):
-    if days < 1 or days > 30:
+    if days < 1 or days > 1000:
         raise HTTPException(
             status_code=400, 
-            detail="The 'days' parameter must be between 1 and 30."
+            detail="The 'days' parameter must be between 1 and 1000."
         )
     print(f"Fetching last {days} days data")
     items = query_last_days(journal_database_path_env, days)
