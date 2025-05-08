@@ -22,9 +22,19 @@
 
 	onMount(async () => {
 		const result = await processLastDaysData(days);
-		dates = result.dates;
-		points = result.points;
-		states = result.states;
+		// Filter the data to include only items with the state "Complete"
+		const filteredData = result.states
+			.map((state, index) => ({
+				date: result.dates[index],
+				point: result.points[index],
+				state
+			}))
+			.filter((item) => item.state === 'Complete' && item.point > 0);
+
+		// Extract the filtered dates, points, and states
+		dates = filteredData.map((item) => item.date);
+		points = filteredData.map((item) => item.point);
+		states = filteredData.map((item) => item.state);
 		stateCounts = result.stateCounts;
 		fallback = result.fallback;
 	});
