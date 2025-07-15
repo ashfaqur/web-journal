@@ -29,6 +29,38 @@ def create_table(conn: Connection):
     conn.commit()
     cursor.close()
 
+def query_counter(journal_db_path: str, days: int) -> list[dict]:
+    try:
+        conn = connect_to_db(journal_db_path)
+        create_table(conn)
+        cursor = conn.cursor()
+        # get todays date in format YYYY-MM-DD
+        date = datetime.now().strftime("%Y-%m-%d")
+        # make query for last x days given todays date
+        cursor.execute(
+            """
+            SELECT name, count, date
+            FROM counter
+            WHERE date <= ?
+            ORDER BY date DESC
+            LIMIT ?
+            """,
+            (date, days,),
+        )
+        rows : list[(str, int, str)] = cursor.fetchall()
+        cursor.close()
+        close_connection(conn)
+        rows = rows[::-1]  # Reverse the list
+        items: list[dict] = []
+        for row in rows:
+            date_str = datetime.strptime(row[2], "%Y-%m-%d").strftime("%d/%m")
+            items.append({"date": date_str, "name": row[0], "count": row[1]})
+        return items
+    except Exception as e:
+        print(f"SQL Query Failure: {e}")
+    return []
+
+
 def query_last_days(journal_db_path: str, days: int) -> list[dict]:
     try:
         conn = connect_to_db(journal_db_path)
@@ -57,5 +89,5 @@ def query_last_days(journal_db_path: str, days: int) -> list[dict]:
             items.append({"date": date_str, "state": row[1], "points": row[2]})
         return items
     except Exception as e:
-        print(f"Failed to add entry: {e}")
+        print(f"SQL Query Failure: {e}")
     return []
