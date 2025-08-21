@@ -1,0 +1,1 @@
+import"../chunks/disclose-version.C1hYVydk.js";import"../chunks/legacy.DGziKzsx.js";import{L as a}from"../chunks/LastDays.ClnK03uj.js";function m(t){a(t,{title:"Last 7 Days",days:7})}export{m as component};
