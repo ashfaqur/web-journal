@@ -2,7 +2,7 @@ import os
 import logging
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from sql import query_last_days
+from sql import query_last_days, query_counter
 
 journal_database_path_env = os.getenv("JOURNAL_DATABASE_PATH")
 
@@ -33,11 +33,18 @@ async def root():
 
 @app.get("/lastdays/{days}")
 async def get_last_days(days: int):
-    if days < 1 or days > 30:
+    if days < 1 or days > 1000:
         raise HTTPException(
             status_code=400, 
-            detail="The 'days' parameter must be between 1 and 30."
+            detail="The 'days' parameter must be between 1 and 1000."
         )
     print(f"Fetching last {days} days data")
     items = query_last_days(journal_database_path_env, days)
     return items
+
+@app.get("/count")
+async def get_counters():
+    items = query_counter(journal_database_path_env, 30)
+    print(items)
+    return ["zikir l"]
+

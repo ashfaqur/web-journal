@@ -1,15 +1,11 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import PlotBar from './PlotBar.svelte';
-	import PieChart from './PieChart.svelte';
+	import PieChart from '$lib/components/PieChart.svelte';
+	import LineChart from '$lib/components/LineChart.svelte';
 	import { processLastDaysData } from '$lib/util';
 
-	interface LastDaysProps {
-		title: string;
-		days: number;
-	}
-
-	let { title, days }: LastDaysProps = $props();
+	const days = 365;
+	const title = 'Last 365 Days';
 
 	let fallback: boolean = $state(false);
 	let dates: string[] = $state([]);
@@ -26,9 +22,19 @@
 
 	onMount(async () => {
 		const result = await processLastDaysData(days);
-		dates = result.dates;
-		points = result.points;
-		states = result.states;
+		// Filter the data to include only items with the state "Complete"
+		const filteredData = result.states
+			.map((state, index) => ({
+				date: result.dates[index],
+				point: result.points[index],
+				state
+			}))
+			.filter((item) => item.state === 'Complete' && item.point > 0);
+
+		// Extract the filtered dates, points, and states
+		dates = filteredData.map((item) => item.date);
+		points = filteredData.map((item) => item.point);
+		states = filteredData.map((item) => item.state);
 		stateCounts = result.stateCounts;
 		fallback = result.fallback;
 	});
@@ -41,7 +47,7 @@
 	</div>
 </section>
 
-<PlotBar
+<LineChart
 	title={`Points earned daily`}
 	xaxis="Date"
 	yaxis="Points"
