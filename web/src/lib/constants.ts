@@ -1,4 +1,5 @@
-export const serverAddress = import.meta.env.VITE_SERVER_ADDRESS || 'http://0.0.0.0:8181';
+// export const serverAddress = 'http://0.0.0.0:8181';
+export const serverAddress = 'http://192.168.2.221:8181';
 
 export const defaultColorValue = 'violet';
 

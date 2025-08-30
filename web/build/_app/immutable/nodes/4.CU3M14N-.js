@@ -1,1 +1,0 @@
-import"../chunks/disclose-version.Dw065vl9.js";import"../chunks/legacy.C2_6Ar88.js";import{L as s}from"../chunks/LastDays.Bt3GCB8r.js";function y(a){s(a,{title:"Last 30 Days",days:30,displayXAxisGap:2})}export{y as component};
