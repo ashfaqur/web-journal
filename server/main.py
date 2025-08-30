@@ -1,12 +1,13 @@
 import os
 import logging
+from typing import Optional
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from sql import query_last_days, query_counter, query_counter_cumulative
 from process import process_counter_data
 
-journal_database_path_env: str | None = os.getenv("JOURNAL_DATABASE_PATH")
+journal_database_path_env: Optional[str] = os.getenv("JOURNAL_DATABASE_PATH")
 
 journal_db = ""
 
