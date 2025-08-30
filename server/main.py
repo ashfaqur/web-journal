@@ -1,10 +1,17 @@
 import os
 import logging
+
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from sql import query_last_days, query_counter
+from sql import query_last_days, query_counter, query_counter_cumulative
+from process import process_counter_data
 
-journal_database_path_env = os.getenv("JOURNAL_DATABASE_PATH")
+journal_database_path_env: str | None = os.getenv("JOURNAL_DATABASE_PATH")
+
+journal_db = ""
+
+if journal_database_path_env:
+    journal_db = journal_database_path_env
 
 logging.basicConfig(
     format="%(asctime)s %(levelname)-8s %(message)s",
@@ -13,11 +20,18 @@ logging.basicConfig(
 )
 
 
+def check_journal_database():
+    if journal_database_path_env is None:
+        logging.error("JOURNAL_DATABASE_PATH environment variable is not set.")
+        raise HTTPException(
+            status_code=500,
+            detail="JOURNAL_DATABASE_PATH environment variable is not set.",
+        )
+
+
 app = FastAPI()
 
-origins = [
-    "*"  # Allow all origins
-]
+origins = ["*"]  # Allow all origins
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -31,20 +45,29 @@ app.add_middleware(
 async def root():
     return {"Health": "OK"}
 
+
 @app.get("/lastdays/{days}")
 async def get_last_days(days: int):
+    check_journal_database()
     if days < 1 or days > 1000:
         raise HTTPException(
-            status_code=400, 
-            detail="The 'days' parameter must be between 1 and 1000."
+            status_code=400, detail="The 'days' parameter must be between 1 and 1000."
         )
     print(f"Fetching last {days} days data")
-    items = query_last_days(journal_database_path_env, days)
+    items = query_last_days(journal_db, days)
     return items
 
-@app.get("/count")
-async def get_counters():
-    items = query_counter(journal_database_path_env, 30)
-    print(items)
-    return ["zikir l"]
 
+@app.get("/count/{days}")
+async def get_counters(days: int) -> dict[str, list[dict]]:
+    check_journal_database()
+    items = query_counter(journal_db, days)
+    processed_counter_data = process_counter_data(items)
+    return processed_counter_data
+
+
+@app.get("/counter_total/{counter_name}/{days}")
+async def get_counter_total(counter_name: str, days: int) -> list[tuple[str, str, int]]:
+    check_journal_database()
+    items = query_counter_cumulative(journal_db, counter_name, days)
+    return items

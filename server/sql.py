@@ -1,5 +1,5 @@
 import sqlite3
-from datetime import datetime
+from datetime import datetime, timedelta
 from sqlite3 import Connection
 
 
@@ -29,33 +29,81 @@ def create_table(conn: Connection):
     conn.commit()
     cursor.close()
 
-def query_counter(journal_db_path: str, days: int) -> list[dict]:
+
+def query_counter(journal_db_path: str, days: int) -> list[tuple[str, str, int]]:
+    """Fetch counter data over the last given days."""
     try:
         conn = connect_to_db(journal_db_path)
         create_table(conn)
         cursor = conn.cursor()
         # get todays date in format YYYY-MM-DD
         date = datetime.now().strftime("%Y-%m-%d")
-        # make query for last x days given todays date
+        # get the date "days" ago
+        days_ago = datetime.now() - timedelta(days=days)
+        days_ago_str = days_ago.strftime("%Y-%m-%d")
+
+        # make query between todays date and days ago
         cursor.execute(
             """
-            SELECT name, count, date
+            SELECT date, name, count
             FROM counter
-            WHERE date <= ?
+            WHERE date <= ? AND date >= ?
             ORDER BY date DESC
             LIMIT ?
             """,
-            (date, days,),
+            (
+                date,
+                days_ago_str,
+                days,
+            ),
         )
-        rows : list[(str, int, str)] = cursor.fetchall()
+        rows: list[tuple[str, str, int]] = cursor.fetchall()
         cursor.close()
         close_connection(conn)
-        rows = rows[::-1]  # Reverse the list
-        items: list[dict] = []
-        for row in rows:
-            date_str = datetime.strptime(row[2], "%Y-%m-%d").strftime("%d/%m")
-            items.append({"date": date_str, "name": row[0], "count": row[1]})
-        return items
+        # Reverse the list to get the oldest first
+        rows = rows[::-1]
+        return rows
+    except Exception as e:
+        print(f"SQL Query Failure: {e}")
+    return []
+
+
+def query_counter_cumulative(
+    journal_db_path: str, counter_name: str, days: int
+) -> list[tuple[str, str, int]]:
+    """Fetch cumulative counter data for a specific counter name over the last given days."""
+    try:
+        conn = connect_to_db(journal_db_path)
+        create_table(conn)
+        cursor = conn.cursor()
+        # get todays date in format YYYY-MM-DD
+        date = datetime.now().strftime("%Y-%m-%d")
+        # get the date "days" ago
+        days_ago = datetime.now() - timedelta(days=days)
+        days_ago_str = days_ago.strftime("%Y-%m-%d")
+
+        # make query between todays date and days ago
+        cursor.execute(
+            """
+            SELECT date, name, cumulative
+            FROM counter
+            WHERE date <= ? AND date >= ? AND name = ?
+            ORDER BY date DESC
+            LIMIT ?
+            """,
+            (
+                date,
+                days_ago_str,
+                counter_name,
+                days,
+            ),
+        )
+        rows: list[tuple[str, str, int]] = cursor.fetchall()
+        cursor.close()
+        close_connection(conn)
+        # Reverse the list to get the oldest first
+        rows = rows[::-1]
+        return rows
     except Exception as e:
         print(f"SQL Query Failure: {e}")
     return []
@@ -77,9 +125,12 @@ def query_last_days(journal_db_path: str, days: int) -> list[dict]:
             ORDER BY date DESC
             LIMIT ?
             """,
-            (date, days,),
+            (
+                date,
+                days,
+            ),
         )
-        rows : list[(str, str, str)] = cursor.fetchall()
+        rows: list[tuple[str, str, str]] = cursor.fetchall()
         cursor.close()
         close_connection(conn)
         rows = rows[::-1]  # Reverse the list

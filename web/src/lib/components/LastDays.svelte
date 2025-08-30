@@ -7,9 +7,10 @@
 	interface LastDaysProps {
 		title: string;
 		days: number;
+		displayXAxisGap?: number;
 	}
 
-	let { title, days }: LastDaysProps = $props();
+	let { title, days, displayXAxisGap = 1 }: LastDaysProps = $props();
 
 	let fallback: boolean = $state(false);
 	let dates: string[] = $state([]);
@@ -50,6 +51,7 @@
 	{states}
 	{stateColors}
 	{fallback}
+	{displayXAxisGap}
 />
 
 <PieChart

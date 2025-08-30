@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import Plotly from 'plotly.js-dist-min';
+	import { isValidPlotlyColor, dateToDDMM } from '$lib/util';
+	import { defaultColorValue } from '$lib/constants';
 
 	interface PlotlyProps {
 		title: string;
@@ -8,12 +10,31 @@
 		yaxis: string;
 		x: string[];
 		y: number[];
-		states: string[];
-		stateColors: { [key: string]: string };
-		fallback: boolean;
+		states?: string[];
+		stateColors?: { [key: string]: string };
+		fallback?: boolean;
+		defaultColor?: string;
+		displayXAxisGap?: number;
+		plotId?: string;
 	}
 
-	let { title, xaxis, yaxis, x, y, states, stateColors, fallback }: PlotlyProps = $props();
+	let {
+		title,
+		xaxis,
+		yaxis,
+		x,
+		y,
+		states = [],
+		stateColors = {},
+		fallback = false,
+		displayXAxisGap = 30,
+		defaultColor = defaultColorValue,
+		plotId = 'lineplot'
+	}: PlotlyProps = $props();
+
+	if (!isValidPlotlyColor(defaultColor)) {
+		defaultColor = defaultColorValue;
+	}
 
 	interface PlotlyData {
 		x: string[];
@@ -27,7 +48,7 @@
 			x,
 			y,
 			mode: 'lines',
-			line: { color: 'green' }
+			line: { color: defaultColor }
 		}
 	]);
 	let layout = $derived({
@@ -35,7 +56,7 @@
 		xaxis: {
 			title: xaxis,
 			tickvals: x, // Ensure all x values are plotted
-			ticktext: x.map((label, index) => (index % 30 === 0 ? label : '')) // Hide labels
+			ticktext: x.map((label, index) => (index % displayXAxisGap === 0 ? dateToDDMM(label) : '')) // Hide labels
 		},
 		yaxis: {
 			title: yaxis
@@ -44,14 +65,14 @@
 	const config = { responsive: true };
 
 	onMount(() => {
-		Plotly.newPlot('plot', data, layout, config);
+		Plotly.newPlot(plotId, data, layout, config);
 	});
 
 	$effect(() => {
-		Plotly.newPlot('plot', data, layout, config);
+		Plotly.newPlot(plotId, data, layout, config);
 	});
 </script>
 
 <div class="w-full">
-	<div id="plot"></div>
+	<div id={plotId}></div>
 </div>

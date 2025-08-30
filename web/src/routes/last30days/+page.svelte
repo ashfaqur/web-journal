@@ -4,4 +4,4 @@
 	const days = 30;
 </script>
 
-<LastDays title={`Last ${days} Days`} {days} />
+<LastDays title={`Last ${days} Days`} {days} displayXAxisGap={2} />
