@@ -11,4 +11,5 @@
 		>Last 365 Days</a
 	>
 	<a href="/counter" class="btn border-green-400 bg-green-300 hover:bg-green-500">Counter</a>
+	<a href="/progress" class="btn border-green-400 bg-green-300 hover:bg-green-500">Progress</a>
 </div>
