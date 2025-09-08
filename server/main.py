@@ -72,3 +72,10 @@ async def get_counter_total(counter_name: str, days: int) -> list[tuple[str, str
     check_journal_database()
     items = query_counter_cumulative(journal_db, counter_name, days)
     return items
+
+
+# @app.get("/progress")
+# async def get_progress_data():
+#     check_journal_database()
+#     # items = query_progress(journal_db)
+#     return items
