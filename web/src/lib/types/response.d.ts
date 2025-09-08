@@ -5,17 +5,17 @@ export type FetchProgressResult = {
 	isFallback: boolean;
 };
 
+type RawProgressData = Record<string, [string, number, number][]>;
+
 export type ProgressObj = {
 	title: string;
-	count: number;
-	progress: number;
 	data: ProgressData[];
-	color?: string = cssColorNames[Math.floor(Math.random() * cssColorNames.length)];
 };
 
 export type ProgressData = {
 	date: string;
-	progress: number;
+	totalProgress: number;
+	dailyProgress: number;
 };
 
 export type DayPoints = {

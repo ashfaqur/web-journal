@@ -4,8 +4,8 @@ from typing import Optional
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from sql import query_last_days, query_counter, query_counter_cumulative
-from process import process_counter_data
+from sql import query_last_days, query_counter, query_counter_cumulative, query_progress
+from process import process_counter_data, process_progress_data
 
 journal_database_path_env: Optional[str] = os.getenv("JOURNAL_DATABASE_PATH")
 
@@ -74,8 +74,11 @@ async def get_counter_total(counter_name: str, days: int) -> list[tuple[str, str
     return items
 
 
-# @app.get("/progress")
-# async def get_progress_data():
-#     check_journal_database()
-#     # items = query_progress(journal_db)
-#     return items
+@app.get("/progress")
+async def get_progress_data():
+    check_journal_database()
+    items: list[tuple[str, str, int, int]] = query_progress(journal_db)
+    processed_progress_data: dict[str, list[tuple[str, int, int]]] = (
+        process_progress_data(items)
+    )
+    return processed_progress_data
