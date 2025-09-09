@@ -4,6 +4,8 @@ A front end showing detailed data analysis based on personal journal.
 
 ![Showing example Data](assets/data_example.png)
 
+![Task Progress Example](assets/progress.png)
+
 ## Keeping a Journal
 
 As we grow older, the days seem to be going away fast.
