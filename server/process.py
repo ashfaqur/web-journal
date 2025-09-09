@@ -14,6 +14,10 @@ def process_progress_data(
         else:
             progress_list[name] = [(date, total_progress)]
 
+    # sort each list by date
+    for name in progress_list:
+        progress_list[name] = sorted(progress_list[name], key=lambda x: x[0])
+
     for name in progress_list:
         # Add missing dates with the same progress as the last entry
         entries = progress_list[name]
