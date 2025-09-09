@@ -1,4 +1,9 @@
-import type { DayPoints, FetchLastDaysResult } from '$lib/types/response';
+import type {
+	DayPoints,
+	FetchLastDaysResult,
+	ProgressObj,
+	RawProgressData
+} from '$lib/types/response';
 import { fetchLastDays } from '$lib/api';
 import { cssColorNames } from '$lib/constants';
 import type { CounterCumulativeTuple, CounterDataDict } from '$lib/types/response';
@@ -102,4 +107,15 @@ export function isDayPoints(data: unknown): data is DayPoints[] {
 				typeof item.points === 'number'
 		)
 	);
+}
+
+export function transformProgressData(raw: RawProgressData): ProgressObj[] {
+	return Object.entries(raw).map(([title, tuples]) => ({
+		title,
+		data: tuples.map(([date, totalProgress, dailyProgress]) => ({
+			date,
+			totalProgress,
+			dailyProgress
+		}))
+	}));
 }

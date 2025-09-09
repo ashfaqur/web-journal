@@ -30,6 +30,30 @@ def create_table(conn: Connection):
     cursor.close()
 
 
+def query_progress(journal_db_path: str) -> list[tuple[str, str, int]]:
+    """Fetch progress data."""
+    try:
+        conn = connect_to_db(journal_db_path)
+        create_table(conn)
+        cursor = conn.cursor()
+
+        cursor.execute(
+            """
+            SELECT name, date, progress
+            FROM progress
+            ORDER BY date ASC
+            """,
+        )
+        items: list[tuple[str, str, int]] = cursor.fetchall()
+
+        cursor.close()
+        close_connection(conn)
+        return items
+    except Exception as e:
+        print(f"SQL Query Failure: {e}")
+    return []
+
+
 def query_counter(journal_db_path: str, days: int) -> list[tuple[str, str, int]]:
     """Fetch counter data over the last given days."""
     try:

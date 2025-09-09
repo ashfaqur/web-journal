@@ -1,12 +1,38 @@
 import { serverAddress } from '$lib/constants';
 import { last30DaysStub } from '$lib/stubs/lastThirtyDays';
+import { progressStub } from '$lib/stubs/progressDataStub';
 import type {
 	DayPoints,
 	FetchLastDaysResult,
 	FetchCounterDataResult,
-	FetchCounterCumulativeResult
+	FetchCounterCumulativeResult,
+	FetchProgressResult
 } from '$lib/types/response';
-import { isDayPoints, isCounterData, isCounterCumulativeData } from '$lib/util';
+import {
+	isDayPoints,
+	isCounterData,
+	isCounterCumulativeData,
+	transformProgressData
+} from '$lib/util';
+
+export async function fetchProgressData(): Promise<FetchProgressResult> {
+	try {
+		console.log('Fetching progress data from server:', serverAddress);
+		const response = await fetch(`${serverAddress}/progress`);
+		const raw = await response.json();
+		if (!response.ok) {
+			console.warn('Response for fetching progress data is not OK, so falling back to stub data');
+			return { data: progressStub, isFallback: true };
+		}
+		const data = transformProgressData(raw);
+
+		return { data, isFallback: false };
+	} catch (error) {
+		console.error('Network error for fetching progress data:', error);
+		console.log('Falling back to stub progress data after fetch error');
+		return { data: progressStub, isFallback: true };
+	}
+}
 
 export async function fetchCounterData(days: number): Promise<FetchCounterDataResult> {
 	console.log(`Fetching last ${days} days counter data from server:`, serverAddress);

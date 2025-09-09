@@ -1,5 +1,22 @@
 import type Counter from '$lib/components/Counter.svelte';
-import type { an } from 'vitest/dist/chunks/reporters.D7Jzd9GS.js';
+
+export type FetchProgressResult = {
+	data: ProgressObj[];
+	isFallback: boolean;
+};
+
+type RawProgressData = Record<string, [string, number, number][]>;
+
+export type ProgressObj = {
+	title: string;
+	data: ProgressData[];
+};
+
+export type ProgressData = {
+	date: string;
+	totalProgress: number;
+	dailyProgress: number;
+};
 
 export type DayPoints = {
 	date: string;

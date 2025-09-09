@@ -16,6 +16,7 @@
 		defaultColor?: string;
 		displayXAxisGap?: number;
 		plotId?: string;
+		yRange?: [number, number];
 	}
 
 	let {
@@ -29,7 +30,8 @@
 		fallback = false,
 		displayXAxisGap = 30,
 		defaultColor = defaultColorValue,
-		plotId = 'lineplot'
+		plotId = 'lineplot',
+		yRange
 	}: PlotlyProps = $props();
 
 	if (!isValidPlotlyColor(defaultColor)) {
@@ -59,7 +61,8 @@
 			ticktext: x.map((label, index) => (index % displayXAxisGap === 0 ? dateToDDMM(label) : '')) // Hide labels
 		},
 		yaxis: {
-			title: yaxis
+			title: yaxis,
+			...(yRange ? { range: yRange } : {})
 		}
 	});
 	const config = { responsive: true };
