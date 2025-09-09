@@ -30,7 +30,7 @@ def create_table(conn: Connection):
     cursor.close()
 
 
-def query_progress(journal_db_path: str) -> list[tuple[str, str, int, int]]:
+def query_progress(journal_db_path: str) -> list[tuple[str, str, int]]:
     """Fetch progress data."""
     try:
         conn = connect_to_db(journal_db_path)
@@ -39,12 +39,12 @@ def query_progress(journal_db_path: str) -> list[tuple[str, str, int, int]]:
 
         cursor.execute(
             """
-            SELECT name, date, progress, daily
+            SELECT name, date, progress
             FROM progress
             ORDER BY date ASC
             """,
         )
-        items: list[tuple[str, str, int, int]] = cursor.fetchall()
+        items: list[tuple[str, str, int]] = cursor.fetchall()
 
         cursor.close()
         close_connection(conn)

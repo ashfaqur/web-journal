@@ -75,10 +75,10 @@ async def get_counter_total(counter_name: str, days: int) -> list[tuple[str, str
 
 
 @app.get("/progress")
-async def get_progress_data():
+async def get_progress_data() -> dict[str, list[tuple[str, int]]]:
     check_journal_database()
-    items: list[tuple[str, str, int, int]] = query_progress(journal_db)
-    processed_progress_data: dict[str, list[tuple[str, int, int]]] = (
-        process_progress_data(items)
+    items: list[tuple[str, str, int]] = query_progress(journal_db)
+    processed_progress_data: dict[str, list[tuple[str, int]]] = process_progress_data(
+        items
     )
     return processed_progress_data
