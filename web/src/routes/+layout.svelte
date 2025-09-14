@@ -1,5 +1,5 @@
 <script lang="ts">
-	import 'tailwindcss/tailwind.css';
+	import '../app.css';
 	import WarnServerInactive from '$lib/components/WarnServerInactive.svelte';
 	let { children } = $props();
 </script>
