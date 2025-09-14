@@ -1,12 +1,15 @@
 import { serverAddress } from '$lib/constants';
 import { last30DaysStub } from '$lib/stubs/lastThirtyDays';
+import { habitStub } from '$lib/stubs/habitDataStub';
 import { progressStub } from '$lib/stubs/progressDataStub';
 import type {
 	DayPoints,
 	FetchLastDaysResult,
 	FetchCounterDataResult,
 	FetchCounterCumulativeResult,
-	FetchProgressResult
+	FetchProgressResult,
+	FetchHabitResult,
+	HabitObj
 } from '$lib/types/response';
 import {
 	isDayPoints,
@@ -14,6 +17,15 @@ import {
 	isCounterCumulativeData,
 	transformProgressData
 } from '$lib/util';
+
+export async function fetchHabitData(days: number): Promise<FetchHabitResult> {
+	let stub_data: HabitObj[] = habitStub;
+	if (days < 30) {
+		// slice the data in the stub to match the given number of days
+		stub_data = stub_data.map((obj) => ({ ...obj, data: obj.data.slice(0, days) }));
+	}
+	return { data: stub_data, isFallback: false };
+}
 
 export async function fetchProgressData(): Promise<FetchProgressResult> {
 	try {
