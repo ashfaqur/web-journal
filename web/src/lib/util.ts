@@ -1,8 +1,10 @@
+import { z } from 'zod';
 import type {
 	DayPoints,
 	FetchLastDaysResult,
 	ProgressObj,
-	RawProgressData
+	RawProgressData,
+	HabitObj
 } from '$lib/types/response';
 import { fetchLastDays } from '$lib/api';
 import { cssColorNames } from '$lib/constants';
@@ -119,3 +121,16 @@ export function transformProgressData(raw: RawProgressData): ProgressObj[] {
 		}))
 	}));
 }
+
+// Type guard to validate the structure
+const HabitDataSchema = z.object({
+	date: z.string(),
+	value: z.number()
+});
+
+const HabitObjSchema = z.object({
+	name: z.string(),
+	data: z.array(HabitDataSchema)
+});
+
+export const HabitObjArraySchema = z.array(HabitObjSchema);

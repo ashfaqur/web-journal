@@ -40,6 +40,7 @@
 		"@sveltejs/adapter-static": "^3.0.9",
 		"@tailwindcss/vite": "^4.1.13",
 		"@types/plotly.js-dist-min": "^2.3.4",
-		"plotly.js-dist-min": "^3.1.0"
+		"plotly.js-dist-min": "^3.1.0",
+		"zod": "^4.1.8"
 	}
 }

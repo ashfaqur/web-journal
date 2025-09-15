@@ -17,7 +17,8 @@ import {
 	isCounterCumulativeData,
 	transformProgressData
 } from '$lib/util';
-import type Habit from './components/Habit.svelte';
+import { HabitObjArraySchema } from '$lib/util';
+import { z } from 'zod';
 
 export async function fetchHabitData(days: number): Promise<FetchHabitResult> {
 	let stub_data: HabitObj[] = habitStub;
@@ -28,15 +29,20 @@ export async function fetchHabitData(days: number): Promise<FetchHabitResult> {
 	try {
 		console.log('Fetching habit data from server:', serverAddress);
 		const response = await fetch(`${serverAddress}/habits`);
-		const raw: HabitObj[] = await response.json();
 		if (!response.ok) {
 			console.warn('Response for fetching habit data is not OK, so falling back to stub data');
 			return { data: stub_data, isFallback: true };
 		}
-		return { data: raw, isFallback: false };
+		const raw: any = await response.json();
+		const validatedData = HabitObjArraySchema.parse(raw);
+		return { data: validatedData, isFallback: false };
 	} catch (error) {
-		console.error('Network error for fetching habit data:', error);
-		console.log('Falling back to stub habit data after fetch error');
+		if (error instanceof z.ZodError) {
+			console.error('Data validation failed:', error);
+		} else {
+			console.error('Network or parsing error:', error);
+		}
+		console.warn('Falling back to stub habit data');
 		return { data: stub_data, isFallback: true };
 	}
 }
