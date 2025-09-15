@@ -17,6 +17,7 @@ import {
 	isCounterCumulativeData,
 	transformProgressData
 } from '$lib/util';
+import type Habit from './components/Habit.svelte';
 
 export async function fetchHabitData(days: number): Promise<FetchHabitResult> {
 	let stub_data: HabitObj[] = habitStub;
@@ -24,7 +25,20 @@ export async function fetchHabitData(days: number): Promise<FetchHabitResult> {
 		// slice the data in the stub to match the given number of days
 		stub_data = stub_data.map((obj) => ({ ...obj, data: obj.data.slice(0, days) }));
 	}
-	return { data: stub_data, isFallback: false };
+	try {
+		console.log('Fetching habit data from server:', serverAddress);
+		const response = await fetch(`${serverAddress}/habits`);
+		const raw: HabitObj[] = await response.json();
+		if (!response.ok) {
+			console.warn('Response for fetching habit data is not OK, so falling back to stub data');
+			return { data: stub_data, isFallback: true };
+		}
+		return { data: raw, isFallback: false };
+	} catch (error) {
+		console.error('Network error for fetching habit data:', error);
+		console.log('Falling back to stub habit data after fetch error');
+		return { data: stub_data, isFallback: true };
+	}
 }
 
 export async function fetchProgressData(): Promise<FetchProgressResult> {

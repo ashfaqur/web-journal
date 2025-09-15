@@ -17,8 +17,11 @@
 		[1, 'rgb(4, 102, 21)'] // green for positive values
 	];
 
-	const ROW_HEIGHT = 100; // pixels per row
+	const ROW_HEIGHT_LG = 100; // pixels per row
+	const ROW_HEIGHT_SM = 55;
 	const MARGIN_HEIGHT = 100; // for title, labels, padding etc.
+
+	let rowHeight = $derived(xValues.length > 10 ? ROW_HEIGHT_SM : ROW_HEIGHT_LG);
 
 	let data: any = $derived([
 		{
@@ -40,7 +43,7 @@
 			ticksuffix: ' '
 		},
 		width: 600,
-		height: yValues.length * ROW_HEIGHT + MARGIN_HEIGHT,
+		height: yValues.length * rowHeight + MARGIN_HEIGHT,
 		autosize: false,
 		plot_bgcolor: '#000000' // black border color
 	});
