@@ -1,6 +1,7 @@
 import sqlite3
 from datetime import datetime, timedelta
 from sqlite3 import Connection
+from habits import HabitDataResult
 
 
 def connect_to_db(file_path) -> Connection:
@@ -30,12 +31,15 @@ def create_table(conn: Connection):
     cursor.close()
 
 
-def query_tags(journal_db_path: str, days: int) -> list[tuple[str, str, int]]:
+def query_tags(journal_db_path: str, days: int) -> HabitDataResult:
     """Fetch tags data over the last given days."""
     try:
         conn = connect_to_db(journal_db_path)
         create_table(conn)
         cursor = conn.cursor()
+
+        cursor.execute("SELECT DISTINCT value FROM tag")
+        habits: list[str] = [row[0] for row in cursor.fetchall()]
 
         cursor.execute(
             """
@@ -49,10 +53,10 @@ def query_tags(journal_db_path: str, days: int) -> list[tuple[str, str, int]]:
         items: list[tuple[str, str, int]] = cursor.fetchall()
         cursor.close()
         close_connection(conn)
-        return items
+        return HabitDataResult(habits=habits, items=items)
     except Exception as e:
         print(f"SQL Query Failure: {e}")
-    return []
+    return HabitDataResult(habits=[], items=[])
 
 
 def query_progress(journal_db_path: str) -> list[tuple[str, str, int]]:
