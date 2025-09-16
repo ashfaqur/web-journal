@@ -30,6 +30,31 @@ def create_table(conn: Connection):
     cursor.close()
 
 
+def query_tags(journal_db_path: str, days: int) -> list[tuple[str, str, int]]:
+    """Fetch tags data over the last given days."""
+    try:
+        conn = connect_to_db(journal_db_path)
+        create_table(conn)
+        cursor = conn.cursor()
+
+        cursor.execute(
+            """
+            SELECT date, value, intensity
+            FROM tag
+            WHERE date >= DATE('now', ?)
+            ORDER BY date ASC
+            """,
+            (f"-{days} day",),  # SQLite expects something like '-7 day'
+        )
+        items: list[tuple[str, str, int]] = cursor.fetchall()
+        cursor.close()
+        close_connection(conn)
+        return items
+    except Exception as e:
+        print(f"SQL Query Failure: {e}")
+    return []
+
+
 def query_progress(journal_db_path: str) -> list[tuple[str, str, int]]:
     """Fetch progress data."""
     try:

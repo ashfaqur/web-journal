@@ -122,15 +122,9 @@ export function transformProgressData(raw: RawProgressData): ProgressObj[] {
 	}));
 }
 
-// Type guard to validate the structure
-const HabitDataSchema = z.object({
-	date: z.string(),
-	value: z.number()
-});
-
-const HabitObjSchema = z.object({
+export const HabitObjDictSchema = z.object({
 	name: z.string(),
-	data: z.array(HabitDataSchema)
+	data: z.record(z.string(), z.number())
 });
 
-export const HabitObjArraySchema = z.array(HabitObjSchema);
+export const HabitObjSchema = z.array(HabitObjDictSchema);

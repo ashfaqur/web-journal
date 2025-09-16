@@ -19,9 +19,18 @@
 		console.log('Habit data loaded:', habitData);
 		const habitObjs: HabitObj[] = habitData.data;
 		fallback = habitData.isFallback;
-		yValues = habitObjs.map((obj) => obj.name);
-		xValues = habitObjs[0].data.map((item) => item.date);
-		zValues = habitObjs.map((obj) => obj.data.map((item) => item.value));
+		yValues = habitObjs.map(
+			(obj) => obj.name.charAt(0).toUpperCase() + obj.name.slice(1).toLowerCase()
+		);
+		if (habitObjs.length > 0) {
+			// Get sorted dates from the first habit
+			xValues = Object.keys(habitObjs[0].data).sort((a, b) => a.localeCompare(b));
+
+			// Map each habit to its values in the same order
+			zValues = habitObjs.map(
+				(obj) => xValues.map((date) => obj.data[date] ?? 0) // fallback 0 if missing
+			);
+		}
 	}
 
 	$effect(() => {

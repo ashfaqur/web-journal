@@ -17,24 +17,27 @@ import {
 	isCounterCumulativeData,
 	transformProgressData
 } from '$lib/util';
-import { HabitObjArraySchema } from '$lib/util';
+import { HabitObjSchema } from '$lib/util';
 import { z } from 'zod';
 
 export async function fetchHabitData(days: number): Promise<FetchHabitResult> {
 	let stub_data: HabitObj[] = habitStub;
 	if (days < 30) {
 		// slice the data in the stub to match the given number of days
-		stub_data = stub_data.map((obj) => ({ ...obj, data: obj.data.slice(0, days) }));
+		stub_data = stub_data.map((obj) => ({
+			...obj,
+			data: Object.fromEntries(Object.entries(obj.data).slice(0, days))
+		}));
 	}
 	try {
 		console.log('Fetching habit data from server:', serverAddress);
-		const response = await fetch(`${serverAddress}/habits`);
+		const response = await fetch(`${serverAddress}/habits/${days}`);
 		if (!response.ok) {
 			console.warn('Response for fetching habit data is not OK, so falling back to stub data');
 			return { data: stub_data, isFallback: true };
 		}
 		const raw: any = await response.json();
-		const validatedData = HabitObjArraySchema.parse(raw);
+		const validatedData = HabitObjSchema.parse(raw);
 		return { data: validatedData, isFallback: false };
 	} catch (error) {
 		if (error instanceof z.ZodError) {

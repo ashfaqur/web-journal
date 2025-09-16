@@ -13,13 +13,16 @@
 
 	const colorscaleValue = [
 		[0, 'rgb(148, 7, 7)'], // red for negative values
-		[0.5, 'rgb(255,255,255)'], // white for zero
+		[0.5, 'rgb(235, 242, 237)'],
 		[1, 'rgb(4, 102, 21)'] // green for positive values
 	];
 
 	const ROW_HEIGHT_LG = 100; // pixels per row
 	const ROW_HEIGHT_SM = 55;
 	const MARGIN_HEIGHT = 100; // for title, labels, padding etc.
+
+	const zMin = -10;
+	const zMax = 10;
 
 	let rowHeight = $derived(xValues.length > 10 ? ROW_HEIGHT_SM : ROW_HEIGHT_LG);
 
@@ -30,6 +33,8 @@
 			z: zValues,
 			type: 'heatmap',
 			colorscale: colorscaleValue,
+			zmin: zMin,
+			zmax: zMax,
 			showscale: false
 		}
 	]);

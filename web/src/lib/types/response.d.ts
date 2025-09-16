@@ -7,12 +7,7 @@ export type FetchHabitResult = {
 
 export type HabitObj = {
 	name: string;
-	data: HabitData[];
-};
-
-export type HabitData = {
-	date: string;
-	value: number;
+	data: Record<string, number>; // key = date, value = intensity
 };
 
 export type FetchProgressResult = {
