@@ -14,7 +14,7 @@
 	const colorscaleValue = [
 		[0, 'rgb(148, 7, 7)'], // red for negative values
 		[0.5, 'rgb(235, 242, 237)'],
-		[1, 'rgb(4, 102, 21)'] // green for positive values
+		[1, 'rgb(15, 163, 2)'] // green for positive values
 	];
 
 	const ROW_HEIGHT_LG = 100; // pixels per row

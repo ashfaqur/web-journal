@@ -24,11 +24,23 @@
 		);
 		if (habitObjs.length > 0) {
 			// Get sorted dates from the first habit
-			xValues = Object.keys(habitObjs[0].data).sort((a, b) => a.localeCompare(b));
+			const dates = Object.keys(habitObjs[0].data).sort((a, b) => a.localeCompare(b));
+
+			// Show day for week and dates for month visualization
+			if (dates.length > 7) {
+				xValues = dates;
+			} else {
+				// Compute day-of-week labels (short, e.g., Mon, Tue)
+				const xDayLabels = dates.map((dateStr) => {
+					const d = new Date(dateStr);
+					return d.toLocaleDateString('en-US', { weekday: 'short' });
+				});
+				xValues = xDayLabels; // just day names
+			}
 
 			// Map each habit to its values in the same order
 			zValues = habitObjs.map(
-				(obj) => xValues.map((date) => obj.data[date] ?? 0) // fallback 0 if missing
+				(obj) => dates.map((date) => obj.data[date] ?? 0) // fallback 0 if missing
 			);
 		}
 	}
@@ -42,4 +54,4 @@
 	<Warning text="Showing mock data due to fetch error" />
 {/if}
 
-<HeatMap title="Habit" {xValues} {yValues} {zValues} />
+<HeatMap title="Habits" {xValues} {yValues} {zValues} />
