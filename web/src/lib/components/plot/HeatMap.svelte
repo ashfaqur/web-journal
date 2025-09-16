@@ -19,7 +19,7 @@
 
 	const ROW_HEIGHT_LG = 100; // pixels per row
 	const ROW_HEIGHT_SM = 55;
-	const MARGIN_HEIGHT = 100; // for title, labels, padding etc.
+	const MARGIN_HEIGHT = 100;
 
 	const zMin = -10;
 	const zMax = 10;
@@ -47,7 +47,7 @@
 			ticks: '',
 			ticksuffix: ' '
 		},
-		width: 600,
+		// width: 600,
 		height: yValues.length * rowHeight + MARGIN_HEIGHT,
 		autosize: false,
 		plot_bgcolor: '#000000' // black border color

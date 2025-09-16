@@ -1,17 +1,17 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import PlotBar from './PlotBar.svelte';
-	import PieChart from './PieChart.svelte';
-	import { processLastDaysData } from '$lib/util';
+	import Warning from '$lib/components/Warning.svelte';
+	import PlotBar from '$lib/components/plot/PlotBar.svelte';
+	import PieChart from '$lib/components/plot/PieChart.svelte';
+	import { processLastDaysData, datesToDays } from '$lib/util';
 
 	interface LastDaysProps {
-		title: string;
 		days: number;
 		displayXAxisGap?: number;
 	}
 
-	let { title, days, displayXAxisGap = 1 }: LastDaysProps = $props();
+	let { days, displayXAxisGap = 1 }: LastDaysProps = $props();
 
+	const title = `Points earned over the last ${days} Days`;
 	let fallback: boolean = $state(false);
 	let dates: string[] = $state([]);
 	let points: number[] = $state([]);
@@ -25,34 +25,26 @@
 		Incomplete: 'orange'
 	};
 
-	onMount(async () => {
+	async function fetchData() {
 		const result = await processLastDaysData(days);
+		console.log('Last days data loaded:', result);
 		dates = result.dates;
 		points = result.points;
 		states = result.states;
 		stateCounts = result.stateCounts;
 		fallback = result.fallback;
+	}
+
+	$effect(() => {
+		fetchData();
 	});
 </script>
 
-<!-- Title -->
-<section>
-	<div class="container flex min-w-full items-center justify-center bg-green-400 px-6 py-1">
-		<h3 class="text-2xl">{title}</h3>
-	</div>
-</section>
+{#if fallback}
+	<Warning text="Showing mock data due to fetch error" />
+{/if}
 
-<PlotBar
-	title={`Points earned daily`}
-	xaxis="Date"
-	yaxis="Points"
-	x={dates}
-	y={points}
-	{states}
-	{stateColors}
-	{fallback}
-	{displayXAxisGap}
-/>
+<PlotBar {title} xaxis="Date" yaxis="Points" x={dates} y={points} {states} {stateColors} />
 
 <PieChart
 	title={`Percentage of days having entries`}

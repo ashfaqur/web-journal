@@ -99,18 +99,6 @@ export function isCounterCumulativeData(data: unknown): data is CounterCumulativ
 	);
 }
 
-export function isDayPoints(data: unknown): data is DayPoints[] {
-	return (
-		Array.isArray(data) &&
-		data.every(
-			(item) =>
-				typeof item.date === 'string' &&
-				typeof item.state === 'string' &&
-				typeof item.points === 'number'
-		)
-	);
-}
-
 export function transformProgressData(raw: RawProgressData): ProgressObj[] {
 	return Object.entries(raw).map(([title, tuples]) => ({
 		title,
@@ -128,3 +116,18 @@ export const HabitObjDictSchema = z.object({
 });
 
 export const HabitObjSchema = z.array(HabitObjDictSchema);
+
+export const DayPointsDictSchema = z.object({
+	date: z.string(),
+	state: z.enum(['Complete', 'Incomplete', 'None']),
+	points: z.number()
+});
+
+export const DayPointsSchema = z.array(DayPointsDictSchema);
+
+export function datesToDays(dates: string[]) {
+	return dates.map((dateStr) => {
+		const d = new Date(dateStr);
+		return d.toLocaleDateString('en-US', { weekday: 'short' });
+	});
+}

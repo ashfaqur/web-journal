@@ -3,6 +3,7 @@
 	import Warning from '$lib/components/Warning.svelte';
 
 	import { fetchHabitData } from '$lib/api';
+	import { datesToDays } from '$lib/util';
 	import type { FetchHabitResult, HabitObj } from '$lib/types/response';
 
 	interface Props {
@@ -31,11 +32,7 @@
 				xValues = dates;
 			} else {
 				// Compute day-of-week labels (short, e.g., Mon, Tue)
-				const xDayLabels = dates.map((dateStr) => {
-					const d = new Date(dateStr);
-					return d.toLocaleDateString('en-US', { weekday: 'short' });
-				});
-				xValues = xDayLabels; // just day names
+				xValues = datesToDays(dates);
 			}
 
 			// Map each habit to its values in the same order

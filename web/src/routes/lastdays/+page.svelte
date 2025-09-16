@@ -1,6 +1,7 @@
 <script lang="ts">
 	import PageTitle from '$lib/components/PageTitle.svelte';
 	import Button from '$lib/components/Button.svelte';
+	import LastDays from '$lib/components/LastDays.svelte';
 	import Habit from '$lib/components/Habit.svelte';
 
 	const title: string = 'Last Days';
@@ -22,6 +23,8 @@
 			/>
 		{/each}
 	</div>
+
+	<LastDays days={selectedDayOption} />
 
 	<!-- Habits heat map over days and activitites -->
 	<Habit days={selectedDayOption} />

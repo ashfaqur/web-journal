@@ -162,7 +162,7 @@ def query_counter_cumulative(
     return []
 
 
-def query_last_days(journal_db_path: str, days: int) -> list[dict]:
+def query_last_days(journal_db_path: str, days: int) -> list[tuple[str, str, int]]:
     try:
         conn = connect_to_db(journal_db_path)
         create_table(conn)
@@ -183,15 +183,11 @@ def query_last_days(journal_db_path: str, days: int) -> list[dict]:
                 days,
             ),
         )
-        rows: list[tuple[str, str, str]] = cursor.fetchall()
+        rows: list[tuple[str, str, int]] = cursor.fetchall()
         cursor.close()
         close_connection(conn)
         rows = rows[::-1]  # Reverse the list
-        items: list[dict] = []
-        for row in rows:
-            date_str = datetime.strptime(row[0], "%Y-%m-%d").strftime("%d/%m")
-            items.append({"date": date_str, "state": row[1], "points": row[2]})
-        return items
+        return rows
     except Exception as e:
         print(f"SQL Query Failure: {e}")
     return []

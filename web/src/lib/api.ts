@@ -11,13 +11,8 @@ import type {
 	FetchHabitResult,
 	HabitObj
 } from '$lib/types/response';
-import {
-	isDayPoints,
-	isCounterData,
-	isCounterCumulativeData,
-	transformProgressData
-} from '$lib/util';
-import { HabitObjSchema } from '$lib/util';
+import { isCounterData, isCounterCumulativeData, transformProgressData } from '$lib/util';
+import { HabitObjSchema, DayPointsSchema } from '$lib/util';
 import { z } from 'zod';
 
 export async function fetchHabitData(days: number): Promise<FetchHabitResult> {
@@ -97,7 +92,11 @@ export async function fetchCounterCumulativeData(
 }
 
 export async function fetchLastDays(days: number): Promise<FetchLastDaysResult> {
-	const stub_data: DayPoints[] = last30DaysStub.slice(0, days);
+	let stub_data: DayPoints[] = last30DaysStub.slice(0, days);
+	if (days < 30) {
+		// slice the data in the stub to match the given number of days
+		stub_data = stub_data.slice(0, days);
+	}
 	try {
 		console.log(`Fetching last ${days} days from server:`, serverAddress);
 		const response = await fetch(`${serverAddress}/lastdays/${days}`);
@@ -108,14 +107,15 @@ export async function fetchLastDays(days: number): Promise<FetchLastDaysResult> 
 		}
 
 		const data = await response.json();
-		if (!isDayPoints(data)) {
-			console.warn('Data format invalid, falling back to stub');
-			return { data: stub_data, isFallback: true };
-		}
-		return { data: data, isFallback: false };
+		const validatedData = DayPointsSchema.parse(data);
+		return { data: validatedData, isFallback: false };
 	} catch (error) {
-		console.error('Network error fetching last 30 days:', error);
-		console.log('Falling back to stub data after fetch error');
+		if (error instanceof z.ZodError) {
+			console.error('Data validation failed for fetch last days:', error);
+		} else {
+			console.error('Network or parsing error for fetch last days:', error);
+		}
+		console.log('Falling back to stub data after fetch error for last days');
 		return { data: stub_data, isFallback: true };
 	}
 }

@@ -1,4 +1,22 @@
 from datetime import datetime, timedelta
+from dataclasses import dataclass
+
+
+@dataclass
+class DayPointsResult:
+    date: str
+    state: str
+    points: int
+
+
+def process_day_points_data(items: list[tuple[str, str, int]]) -> list[DayPointsResult]:
+    day_points_list: list[DayPointsResult] = []
+    for item in items:
+        date: str = item[0]
+        state: str = item[1]
+        points: int = item[2]
+        day_points_list.append(DayPointsResult(date, state, points))
+    return day_points_list
 
 
 def process_progress_data(
