@@ -1,5 +1,15 @@
 import type Counter from '$lib/components/Counter.svelte';
 
+export type FetchHabitResult = {
+	data: HabitObj[];
+	isFallback: boolean;
+};
+
+export type HabitObj = {
+	name: string;
+	data: Record<string, number>; // key = date, value = intensity
+};
+
 export type FetchProgressResult = {
 	data: ProgressObj[];
 	isFallback: boolean;

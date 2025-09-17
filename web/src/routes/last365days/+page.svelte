@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import PieChart from '$lib/components/PieChart.svelte';
+	import PieChart from '$lib/components/plot/PieChart.svelte';
 	import LineChart from '$lib/components/LineChart.svelte';
 	import { processLastDaysData } from '$lib/util';
 

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { DayCounts } from '$lib/types/response';
-	import PlotBar from '$lib/components/PlotBar.svelte';
+	import PlotBar from '$lib/components/plot/PlotBar.svelte';
 	import LineChart from './LineChart.svelte';
 	import { onMount } from 'svelte';
 	import { fetchCounterCumulativeData } from '$lib/api';

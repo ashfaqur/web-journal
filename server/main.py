@@ -4,8 +4,20 @@ from typing import Optional
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from sql import query_last_days, query_counter, query_counter_cumulative, query_progress
-from process import process_counter_data, process_progress_data
+from sql import (
+    query_last_days,
+    query_counter,
+    query_counter_cumulative,
+    query_progress,
+    query_tags,
+)
+from process import (
+    process_counter_data,
+    process_progress_data,
+    process_day_points_data,
+    DayPointsResult,
+)
+from habits import process_habits_data, HabitDataResult, HabitObj
 
 journal_database_path_env: Optional[str] = os.getenv("JOURNAL_DATABASE_PATH")
 
@@ -55,7 +67,8 @@ async def get_last_days(days: int):
             status_code=400, detail="The 'days' parameter must be between 1 and 1000."
         )
     print(f"Fetching last {days} days data")
-    items = query_last_days(journal_db, days)
+    result: list[tuple[str, str, int]] = query_last_days(journal_db, days)
+    items: list[DayPointsResult] = process_day_points_data(result)
     return items
 
 
@@ -82,3 +95,10 @@ async def get_progress_data() -> dict[str, list[tuple[str, int]]]:
         items
     )
     return processed_progress_data
+
+
+@app.get("/habits/{days}")
+async def get_habits_data(days: int) -> list[HabitObj]:
+    check_journal_database()
+    result: HabitDataResult = query_tags(journal_db, days)
+    return process_habits_data(result, days)

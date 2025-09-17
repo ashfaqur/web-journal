@@ -1,6 +1,7 @@
 import sqlite3
 from datetime import datetime, timedelta
 from sqlite3 import Connection
+from habits import HabitDataResult
 
 
 def connect_to_db(file_path) -> Connection:
@@ -28,6 +29,34 @@ def create_table(conn: Connection):
     )
     conn.commit()
     cursor.close()
+
+
+def query_tags(journal_db_path: str, days: int) -> HabitDataResult:
+    """Fetch tags data over the last given days."""
+    try:
+        conn = connect_to_db(journal_db_path)
+        create_table(conn)
+        cursor = conn.cursor()
+
+        cursor.execute("SELECT DISTINCT value FROM tag")
+        habits: list[str] = [row[0] for row in cursor.fetchall()]
+
+        cursor.execute(
+            """
+            SELECT date, value, intensity
+            FROM tag
+            WHERE date >= DATE('now', ?)
+            ORDER BY date ASC
+            """,
+            (f"-{days} day",),  # SQLite expects something like '-7 day'
+        )
+        items: list[tuple[str, str, int]] = cursor.fetchall()
+        cursor.close()
+        close_connection(conn)
+        return HabitDataResult(habits=habits, items=items)
+    except Exception as e:
+        print(f"SQL Query Failure: {e}")
+    return HabitDataResult(habits=[], items=[])
 
 
 def query_progress(journal_db_path: str) -> list[tuple[str, str, int]]:
@@ -133,7 +162,7 @@ def query_counter_cumulative(
     return []
 
 
-def query_last_days(journal_db_path: str, days: int) -> list[dict]:
+def query_last_days(journal_db_path: str, days: int) -> list[tuple[str, str, int]]:
     try:
         conn = connect_to_db(journal_db_path)
         create_table(conn)
@@ -154,15 +183,11 @@ def query_last_days(journal_db_path: str, days: int) -> list[dict]:
                 days,
             ),
         )
-        rows: list[tuple[str, str, str]] = cursor.fetchall()
+        rows: list[tuple[str, str, int]] = cursor.fetchall()
         cursor.close()
         close_connection(conn)
         rows = rows[::-1]  # Reverse the list
-        items: list[dict] = []
-        for row in rows:
-            date_str = datetime.strptime(row[0], "%Y-%m-%d").strftime("%d/%m")
-            items.append({"date": date_str, "state": row[1], "points": row[2]})
-        return items
+        return rows
     except Exception as e:
         print(f"SQL Query Failure: {e}")
     return []
