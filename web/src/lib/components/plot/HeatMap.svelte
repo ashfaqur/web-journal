@@ -17,8 +17,8 @@
 		[1, 'rgb(15, 163, 2)'] // green for positive values
 	];
 
-	const ROW_HEIGHT_LG = 100; // pixels per row
-	const ROW_HEIGHT_SM = 55;
+	const ROW_HEIGHT_LG = 60; // pixels per row
+	const ROW_HEIGHT_SM = 45;
 	const MARGIN_HEIGHT = 100;
 
 	const zMin = -10;
@@ -47,9 +47,8 @@
 			ticks: '',
 			ticksuffix: ' '
 		},
-		width: 600,
 		height: yValues.length * rowHeight + MARGIN_HEIGHT,
-		autosize: false,
+		autosize: true,
 		plot_bgcolor: '#000000' // black border color
 	});
 
@@ -60,4 +59,4 @@
 	});
 </script>
 
-<div id={plotId}></div>
+<div id={plotId} class="w-full"></div>
