@@ -55,15 +55,15 @@
 	let tickFormat = $derived(x.length <= 7 ? '%a' : '%b %d');
 
 	let layout: any = $derived({
-		title: title,
+		title: { text: title }, // chart title
 		xaxis: {
-			title: xaxis,
-			type: 'date', // <-- important
-			tickformat: tickFormat, // optional: format ticks as DD/MM
+			title: { text: xaxis },
+			type: 'date',
+			tickformat: tickFormat,
 			automargin: true
 		},
 		yaxis: {
-			title: yaxis
+			title: { text: yaxis }
 		}
 	});
 	const config = { responsive: true };

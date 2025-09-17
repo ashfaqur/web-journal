@@ -11,7 +11,6 @@
 
 	let { days, displayXAxisGap = 1 }: LastDaysProps = $props();
 
-	const title = `Points earned over the last ${days} Days`;
 	let fallback: boolean = $state(false);
 	let dates: string[] = $state([]);
 	let points: number[] = $state([]);
@@ -44,7 +43,15 @@
 	<Warning text="Showing mock data due to fetch error" />
 {/if}
 
-<PlotBar {title} xaxis="Date" yaxis="Points" x={dates} y={points} {states} {stateColors} />
+<PlotBar
+	title={`Points earned over the last ${days} Days`}
+	xaxis="Date"
+	yaxis="Points"
+	x={dates}
+	y={points}
+	{states}
+	{stateColors}
+/>
 
 <PieChart
 	title={`Percentage of days having entries`}
