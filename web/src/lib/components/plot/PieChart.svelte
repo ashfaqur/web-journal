@@ -45,4 +45,6 @@
 	});
 </script>
 
-<div id="pie-chart"></div>
+<div class="w-full">
+	<div id="pie-chart"></div>
+</div>
