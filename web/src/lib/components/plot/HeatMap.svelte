@@ -18,7 +18,7 @@
 	];
 
 	const ROW_HEIGHT_LG = 60; // pixels per row
-	const ROW_HEIGHT_SM = 45;
+	const ROW_HEIGHT_SM = 50;
 	const MARGIN_HEIGHT = 100;
 
 	const zMin = -10;
