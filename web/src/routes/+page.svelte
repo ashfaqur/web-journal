@@ -3,12 +3,6 @@
 	<a href="/lastdays" class="btn rounded-2xl border-green-400 bg-green-300 hover:bg-green-500"
 		>Last Days</a
 	>
-	<a href="/last7days" class="btn rounded-2xl border-green-400 bg-green-300 hover:bg-green-500"
-		>Last 7 Days</a
-	>
-	<a href="/last30days" class="btn rounded-2xl border-green-400 bg-green-300 hover:bg-green-500"
-		>Last 30 Days</a
-	>
 	<a href="/last365days" class="btn rounded-2xl border-green-400 bg-green-300 hover:bg-green-500"
 		>Last 365 Days</a
 	>

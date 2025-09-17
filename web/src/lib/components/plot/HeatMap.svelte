@@ -47,7 +47,7 @@
 			ticks: '',
 			ticksuffix: ' '
 		},
-		// width: 600,
+		width: 600,
 		height: yValues.length * rowHeight + MARGIN_HEIGHT,
 		autosize: false,
 		plot_bgcolor: '#000000' // black border color
