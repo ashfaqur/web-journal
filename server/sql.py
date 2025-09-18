@@ -31,20 +31,20 @@ def create_table(conn: Connection):
     cursor.close()
 
 
-def query_tags(journal_db_path: str, days: int) -> HabitDataResult:
+def query_habits(journal_db_path: str, days: int) -> HabitDataResult:
     """Fetch tags data over the last given days."""
     try:
         conn = connect_to_db(journal_db_path)
         create_table(conn)
         cursor = conn.cursor()
 
-        cursor.execute("SELECT DISTINCT value FROM tag")
+        cursor.execute("SELECT DISTINCT value FROM habits")
         habits: list[str] = [row[0] for row in cursor.fetchall()]
 
         cursor.execute(
             """
             SELECT date, value, intensity
-            FROM tag
+            FROM habits
             WHERE date >= DATE('now', ?)
             ORDER BY date ASC
             """,

@@ -31,7 +31,7 @@
 	]);
 
 	let layout = $derived({
-		title: title
+		title: { text: title }
 	});
 
 	const config = { responsive: true };

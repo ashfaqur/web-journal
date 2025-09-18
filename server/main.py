@@ -9,7 +9,7 @@ from sql import (
     query_counter,
     query_counter_cumulative,
     query_progress,
-    query_tags,
+    query_habits,
 )
 from process import (
     process_counter_data,
@@ -100,5 +100,5 @@ async def get_progress_data() -> dict[str, list[tuple[str, int]]]:
 @app.get("/habits/{days}")
 async def get_habits_data(days: int) -> list[HabitObj]:
     check_journal_database()
-    result: HabitDataResult = query_tags(journal_db, days)
+    result: HabitDataResult = query_habits(journal_db, days)
     return process_habits_data(result, days)
