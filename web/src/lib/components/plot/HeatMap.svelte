@@ -17,15 +17,14 @@
 		[1, 'rgb(15, 163, 2)'] // green for positive values
 	];
 
-	const ROW_HEIGHT_LG = 60; // pixels per row
-	const ROW_HEIGHT_SM = 50;
+	const ROW_HEIGHT_LG = 55; // pixels per row
+	const ROW_HEIGHT_SM = 35;
 	const MARGIN_HEIGHT = 100;
 
 	const zMin = -10;
 	const zMax = 10;
 
 	let rowHeight = $derived(xValues.length > 10 ? ROW_HEIGHT_SM : ROW_HEIGHT_LG);
-
 	let data: any = $derived([
 		{
 			x: xValues,

@@ -37,10 +37,15 @@ def query_habits(journal_db_path: str, days: int) -> HabitDataResult:
         conn = connect_to_db(journal_db_path)
         create_table(conn)
         cursor = conn.cursor()
-
-        cursor.execute("SELECT DISTINCT value FROM habits")
+        # Fetch habits in the defined order
+        cursor.execute(
+            """
+            SELECT value
+            FROM habits_order
+            ORDER BY id ASC
+            """
+        )
         habits: list[str] = [row[0] for row in cursor.fetchall()]
-
         cursor.execute(
             """
             SELECT date, value, intensity

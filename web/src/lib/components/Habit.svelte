@@ -5,6 +5,7 @@
 	import { fetchHabitData } from '$lib/api';
 	import { datesToDays } from '$lib/util';
 	import type { FetchHabitResult, HabitObj } from '$lib/types/response';
+	import { habitStub } from '$lib/stubs/habitDataStub';
 
 	interface Props {
 		days: number;
@@ -17,12 +18,12 @@
 
 	async function fetchData() {
 		const habitData: FetchHabitResult = await fetchHabitData(days);
-		console.log('Habit data loaded:', habitData);
-		const habitObjs: HabitObj[] = habitData.data;
+		const habitObjs: HabitObj[] = habitData.data.reverse(); // show first ones at the top
 		fallback = habitData.isFallback;
 		yValues = habitObjs.map(
 			(obj) => obj.name.charAt(0).toUpperCase() + obj.name.slice(1).toLowerCase()
 		);
+
 		if (habitObjs.length > 0) {
 			// Get sorted dates from the first habit
 			const dates = Object.keys(habitObjs[0].data).sort((a, b) => a.localeCompare(b));

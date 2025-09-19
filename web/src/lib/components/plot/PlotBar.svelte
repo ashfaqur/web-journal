@@ -60,7 +60,9 @@
 			title: { text: xaxis },
 			type: 'date',
 			tickformat: tickFormat,
-			automargin: true
+			automargin: true,
+			// force daily ticks only when <= 7 days
+			...(x.length <= 7 ? { tickmode: 'linear', dtick: 24 * 60 * 60 * 1000 } : {})
 		},
 		yaxis: {
 			title: { text: yaxis }

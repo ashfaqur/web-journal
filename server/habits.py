@@ -31,6 +31,9 @@ def process_habits_data(data: HabitDataResult, days: int) -> list[HabitObj]:
         if habit not in temp:
             temp[habit] = init_dates.copy()
 
+    # Order the habits in the same order as the original habits list
+    temp = {habit: temp[habit] for habit in data.habits}
+
     result: list[HabitObj] = [
         HabitObj(name=tag, data=dates_dict) for tag, dates_dict in temp.items()
     ]
