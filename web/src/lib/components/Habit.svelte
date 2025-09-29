@@ -5,7 +5,6 @@
 	import { fetchHabitData } from '$lib/api';
 	import { datesToDays } from '$lib/util';
 	import type { FetchHabitResult, HabitObj } from '$lib/types/response';
-	import { habitStub } from '$lib/stubs/habitDataStub';
 
 	interface Props {
 		days: number;
@@ -20,8 +19,12 @@
 		const habitData: FetchHabitResult = await fetchHabitData(days);
 		const habitObjs: HabitObj[] = habitData.data.reverse(); // show first ones at the top
 		fallback = habitData.isFallback;
-		yValues = habitObjs.map(
-			(obj) => obj.name.charAt(0).toUpperCase() + obj.name.slice(1).toLowerCase()
+		// Capitalize the first letter
+		yValues = habitObjs.map((habit: HabitObj) =>
+			habit.name
+				.split(' ')
+				.map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+				.join(' ')
 		);
 
 		if (habitObjs.length > 0) {
@@ -44,7 +47,11 @@
 	}
 
 	$effect(() => {
+		// Calculate time taken to fetch data
+		const start = performance.now();
 		fetchData();
+		const end = performance.now();
+		console.debug(`Time to fetch habit data: ${end - start} ms`);
 	});
 </script>
 

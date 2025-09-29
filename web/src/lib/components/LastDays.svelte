@@ -35,7 +35,11 @@
 	}
 
 	$effect(() => {
+		// Calculate time taken to fetch data
+		const start = performance.now();
 		fetchData();
+		const end = performance.now();
+		console.debug(`Time to fetch last days data: ${end - start} ms`);
 	});
 </script>
 

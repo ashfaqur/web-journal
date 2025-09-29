@@ -61,8 +61,15 @@
 			type: 'date',
 			tickformat: tickFormat,
 			automargin: true,
-			// force daily ticks only when <= 7 days
-			...(x.length <= 7 ? { tickmode: 'linear', dtick: 24 * 60 * 60 * 1000 } : {})
+			...(x.length <= 7
+				? {
+						tickmode: 'array',
+						tickvals: x,
+						ticktext: x.map((d) => new Date(d).toLocaleDateString('en-US', { weekday: 'short' }))
+					}
+				: {
+						tickformat: '%b %d' // fallback default for longer ranges
+					})
 		},
 		yaxis: {
 			title: { text: yaxis }
