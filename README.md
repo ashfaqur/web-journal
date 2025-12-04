@@ -2,27 +2,49 @@
 
 A front end showing detailed data analysis based on personal journal.
 
+Showing daily journal entry trends.
+
 ![Showing example Data](assets/data_example.png)
+
+Tracking progress of peronal milestones.
 
 ![Task Progress Example](assets/progress.png)
 
+Displaying daily habits.
+
+![Heatmap Example](assets/heatmap.png)
+
+## Tech stack
+
+- Python based parser that parses the raw markdown files containing the journal entries.
+  The data in then stored into the database.
+  The script is run by a cron job on a predefined schedule to get new journal entries.
+- SQLite database for storing the data.
+- FastAPI as the server to query from the database and serve the frontend.
+- Svelte for the frontend with typescript and daisy ui for styling. Plotly.js is used for ploting the graphs.
+
+  The seperation of concerns in the stack really helps to split the logic into managable chunks.
+
 ## Keeping a Journal
 
-As we grow older, the days seem to be going away fast.
-Although very much busy every day but seems easy to forget
-what happened yesterday, let alone remember what happened
-days ago.
+As we get older, time seems to move faster.
+The days are full, yet it becomes surprisingly easy to
+forget what happened yesterday, let alone weeks ago.
 
-Based on that I started keeping a journal, to keep track
-of what I do everyday. Like children's games, points are given
-for completing various tasks. Helps quite a bit for motivation to
-do tedious chores.
+To keep track of my daily life, I started keeping a journal.
+I treat it a bit like a game: I assign points for completing
+different tasks. It’s a simple system, but it’s been great for
+staying motivated, especially when it comes to tedious chores.
 
-But keeping this journal itself sometimes can feel like a chore.
-And so the idea that if I can visualize my journal, points
-etc then that would be a motivation boost to enter into the
-journal everyday. And thus this site which shows visualization
-based on journal data.
+But keeping the journal can itself start to feel like a chore.
+So I wanted something that would make the process rewarding.
+Visualizing my progress using the points, the habits, the trends
+becomes a movtivating factor.
+
+That is how this project came to be. A small site that turns
+journal entries into clear, engaging visualizations. The goal
+is to make the journal not just a log, but a source of motivation
+to keep going every day.
 
 ## Journal
 
@@ -46,12 +68,11 @@ the points attached to them.
 
 ## Analysis
 
-A python script shifts and parses through the
-journal files. The extracted data is then put
-into a database.
+A Python script processes the journal files and
+imports the extracted data into a database.
 
-The parser is currently in another private repository since
-they contain personal infomation.
+The parser is kept in a private repository because
+it contains personal parsing logic.
 
 ## Visualization
 
@@ -61,45 +82,34 @@ repository is all about.
 The website is static and is meant for being
 hosted on a local server. For me it is a Raspberry Pi.
 
+## Architecture
+
+
 
 ## Tech stack
 
-- Python based parser that parses the raw markdown files containing the journal entries. The data in then stored into the database. The script is run by a cron job on a predefined schedule to get new journal entries.
+- Python based parser that parses the raw markdown files containing the journal entries.
+  The data in then stored into the database.
+  The script is run by a cron job on a predefined schedule to get new journal entries.
 - SQLite database for storing the parsed data.
 - FastAPI as the server to query from the database and serve the frontend.
 - Svelte for the frontend with typescript and daisy ui for styling. Plotly.js is used for ploting the graphs.
 
   The seperation of concerns in the stack really helps to split the logic into managable chunks.
 
-## Future
+## Future features
 
-More visualizations are planed using more data for example from
-google timeline to track my movements for the day.
+Use data from google timeline to track my movements for the day.
 
-## Dev Notes
+"On this Day" feature where it shows pictures and videos
+on current day from previous years.
 
-Set the path to the sqlite database:
+## Improvements
 
-    export JOURNAL_DATABASE_PATH=/home/ash/journal.db
+Containerized docker deployments to raspberry pi.
 
-Run the sever:
+Add unit, integration, functional tests.
 
-    uvicorn main:app --host 0.0.0.0 --port 8181 --reload
+REST better handling of errors and proper error return codes.
 
-Run the front end
-
-    npm run dev
-
-## Deployment
-
-PI has a hard time building the web frontend,
-so build it on PC then upload the build artifacts to the repository,
-then deploy it to the PI.
-
-Note to change the server address to the PI address before building:
-
-    export const serverAddress = 'http://0.0.0.0:8181';
-
-Nginx setup script:
-
-    /etc/nginx/sites-available/default
+Move computational logic from client to server.
