@@ -28,7 +28,7 @@ export const last30DaysStub: DayPoints[] = [
 	},
 	{
 		date: '2025-04-03',
-		state: 'Complete',
+		state: 'Incomplete',
 		points: 110
 	},
 	{
