@@ -25,7 +25,7 @@ Displaying daily habits.
 
   The seperation of concerns in the stack really helps to split the logic into managable chunks.
 
-## Keeping a Journal
+## Why Journal Visualizer
 
 As we get older, time seems to move faster.
 The days are full, yet it becomes surprisingly easy to
@@ -52,7 +52,7 @@ Although free writing text in the Journal is fun, the entries
 needs to have some structure in order to for data analysis
 later on.
 
-The journal format is simple like:
+The journal format is simple:
 
 25 April 2025
 - Wake up early 5
@@ -84,18 +84,19 @@ hosted on a local server. For me it is a Raspberry Pi.
 
 ## Architecture
 
+![Architecture](assets/diagram.png)
 
+## Tech Stack
 
-## Tech stack
+- Python Parser – A Python script parses the raw Markdown journal entries and stores the extracted data in the database. The script is scheduled via a cron job to automatically process new entries.
 
-- Python based parser that parses the raw markdown files containing the journal entries.
-  The data in then stored into the database.
-  The script is run by a cron job on a predefined schedule to get new journal entries.
-- SQLite database for storing the parsed data.
-- FastAPI as the server to query from the database and serve the frontend.
-- Svelte for the frontend with typescript and daisy ui for styling. Plotly.js is used for ploting the graphs.
+- SQLite Database – Stores the parsed journal data in a lightweight, reliable format.
 
-  The seperation of concerns in the stack really helps to split the logic into managable chunks.
+- FastAPI – Serves as the backend API, querying the database and providing endpoints for the frontend.
+
+- Svelte Frontend – Built with TypeScript and styled using DaisyUI. Plotly.js is used to render interactive graphs and visualizations.
+
+The separation of concerns in this stack allows each part of the application to focus on a specific responsibility, making the logic easier to maintain, test, and extend.
 
 ## Future features
 
@@ -113,3 +114,7 @@ Add unit, integration, functional tests.
 REST better handling of errors and proper error return codes.
 
 Move computational logic from client to server.
+
+## Others:
+
+Uses icons from https://www.flaticon.com
