@@ -14,17 +14,6 @@ Displaying daily habits.
 
 ![Heatmap Example](assets/heatmap.png)
 
-## Tech stack
-
-- Python based parser that parses the raw markdown files containing the journal entries.
-  The data in then stored into the database.
-  The script is run by a cron job on a predefined schedule to get new journal entries.
-- SQLite database for storing the data.
-- FastAPI as the server to query from the database and serve the frontend.
-- Svelte for the frontend with typescript and daisy ui for styling. Plotly.js is used for ploting the graphs.
-
-  The seperation of concerns in the stack really helps to split the logic into managable chunks.
-
 ## Why Journal Visualizer
 
 As we get older, time seems to move faster.
@@ -98,6 +87,12 @@ hosted on a local server. For me it is a Raspberry Pi.
 
 The separation of concerns in this stack allows each part of the application to focus on a specific responsibility, making the logic easier to maintain, test, and extend.
 
+## Site
+
+Deployed site using mock data:
+
+https://web-journal-indol.vercel.app/
+
 ## Future features
 
 Use data from google timeline to track my movements for the day.
@@ -109,9 +104,9 @@ on current day from previous years.
 
 Containerized docker deployments to raspberry pi.
 
-Add unit, integration, functional tests.
+Add tests.
 
-REST better handling of errors and proper error return codes.
+Proper REST API error codes.
 
 Move computational logic from client to server.
 
